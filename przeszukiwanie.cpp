@@ -66,7 +66,3 @@ int plik(string nazwa, string nazwa2){
     return 0;
     
 }
-
-int main()
-{
-}
