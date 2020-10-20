@@ -72,3 +72,7 @@ Thumbs.db
 *.dll
 *.exe
 
+Debug/
+Graph/
+Graph.sln
+
