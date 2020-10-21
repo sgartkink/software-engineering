@@ -1,4 +1,3 @@
-#pragma once
 #include <filesystem>
 
 int filesize(std::string filename)
