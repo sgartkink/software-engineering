@@ -20,7 +20,6 @@ namespace list_files {
 
             if (ends_with(file_path, ".h") || ends_with(file_path, ".cpp"))
                 list.push_back(dirEntry.path().string());
-
         }
 
         return list;
