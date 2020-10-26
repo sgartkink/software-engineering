@@ -43,21 +43,22 @@ our_map create_map(std::list<std::string> list_files)
             std::size_t is_library = line.find("<");
         	
             
-            if(where != std::string::npos && is_library == std::string::npos){
+            if (where != std::string::npos && is_library == std::string::npos) {
                 where += search.size();
-                std::string file_name = line.substr(where);
+                auto file_name = line.substr(where);
 
             	// trim string of spaces and quotes
-                file_name.erase(std::remove(std::begin(file_name), std::end(file_name), ' '), std::end(file_name));
-                file_name.erase(std::remove(std::begin(file_name), std::end(file_name), '"'), std::end(file_name));
+//                file_name.erase(std::remove(std::begin(file_name), std::end(file_name), ' '), std::end(file_name));
+//                file_name.erase(std::remove(std::begin(file_name), std::end(file_name), '"'), std::end(file_name));
             	
                 // check if string is a name of a header or cpp file
                 if (line.find(".h") != std::string::npos || line.find(".cpp") != std::string::npos){ 
 					map[*it].includes.push_back(file_name);             	
                 }
+            }
         }
     }
-} 
+
     return map;
 }
 
