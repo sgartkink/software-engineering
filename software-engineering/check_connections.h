@@ -27,8 +27,8 @@ void check_connections(const std::list<std::string> &list_files)
         std::string previous_line;
         std::string line;
 
-        //if this value is 0 we are looking for functions declarations
-        //and if greater than 0 we check what functions a given function calls
+        // if this value is 0 we are looking for functions declarations
+        // and if greater than 0 we check what functions a given function calls
         int brackets_amount = 0;
 
         while (!file.eof())
@@ -50,7 +50,7 @@ void check_connections(const std::list<std::string> &list_files)
                 line = current_line;
             }
 
-            //remove spaces from the beginning of the line
+            // remove spaces from the beginning of the line
             for (unsigned int i = 0; i < line.length(); i++)
                 if (line.at(i) != ' ')
                 {
@@ -58,13 +58,13 @@ void check_connections(const std::list<std::string> &list_files)
                     break;
                 }
 
-            //check if line starts with a comment
+            // check if line starts with a comment
             //! \todo take into account a block of comments
             if (line.length() >= 1)
                 if (line.rfind("//", 0) != std::string::npos || line.rfind("/*", 0) != std::string::npos)
                     continue;
 
-            //function's definition when { is in other line
+            // function's definition when { is in other line
             if (previous_line.find("(") != std::string::npos && line.find("{") != std::string::npos && brackets_amount == 0)
             {
                 int i = previous_line.find("(") - 1;
@@ -76,36 +76,70 @@ void check_connections(const std::list<std::string> &list_files)
                 std::cout << std::endl << "Function: " << function_name << std::endl;
             }
 
-            //function's definition when { is in the same line
+            // function's definition when { is in the same line
             else if (line.find("(") != std::string::npos && line.find("{") != std::string::npos && brackets_amount == 0)
             {
                 if (line.find("{") > line.find("("))
                 {
                     int i = line.find("(") - 1;
-                    for (; i >= 0; --i)
-                        if (line.at(i) == ' ')
-                            break;
 
-                    std::string function_name = line.substr(i + 1, line.find("(") - i - 1);
-                    std::cout << std::endl << "Function: " << function_name << std::endl;
+                    // handle situations like:
+                    // void function
+                    // (args) {
+                    if (i == -1)
+                    {
+                        i = previous_line.length() - 1;
+                        for (; i > 0; --i)
+                            if (previous_line.at(i) == ' ')
+                                break;
+                        std::cout << std::endl << "Function: " << previous_line.substr(i+1, previous_line.length()) << std::endl;
+                    }
+                    else
+                    {
+                        for (; i >= 0; --i)
+                            if (line.at(i) == ' ')
+                                break;
+
+                        std::string function_name = line.substr(i + 1, line.find("(") - i - 1);
+                        std::cout << std::endl << "Function: " << function_name << std::endl;
+                    }
 
                     //cut line
                     line = line.substr(line.find("(") + 1, line.length());
                 }
             }
 
-            //to jest sprawdzenie po to żeby szukał tylko pomiędzy { }, wykluczenie przy okazji namespace, struct i class
+            // to jest sprawdzenie po to żeby szukał tylko pomiędzy { }, wykluczenie przy okazji namespace, struct i class
             //! \todo handle situation when { } is only a scope
-            //line.find('"{"') oznacza żeby nie brać pod uwagę ifów, w których ten warunek jest sprawdzany,
-            //bo to "sztucznie nabijało"
+            //! \todo handle situation when { } are in the same line
+            //! \todo } is in the end of the line
+            // line.find('"{"') oznacza żeby nie brać pod uwagę ifów, w których ten warunek jest sprawdzany,
+            // bo to "sztucznie nabijało"
             if (line.find("{") != std::string::npos && line.rfind("namespace", 0) == std::string::npos &&
                     line.rfind("class", 0) == std::string::npos && line.rfind("struct", 0) == std::string::npos
                     && line.find('"{"') == std::string::npos)
                 brackets_amount++;
-            else if (line.find("}") != std::string::npos && brackets_amount > 0 && line.find('"}"') == std::string::npos)
+            if (line.find("}") != std::string::npos && brackets_amount > 0 && line.find('"}"') == std::string::npos)
                 brackets_amount--;
 
-            //szukamy użytych funkcji
+            // handle situations like:
+            // function
+            // (args);
+            if (line.rfind("(", 0) != std::string::npos && brackets_amount > 0)
+            {
+                int i = previous_line.length() - 1;
+                for (; i > 0; --i)
+                    if (previous_line.at(i) == ' ' || previous_line.at(i) == '?' || previous_line.at(i) == '.'
+                            || previous_line.at(i) == '>' || previous_line.at(i) == '=' || previous_line.at(i) == '('
+                            || previous_line.at(i) == '"' || previous_line.at(i) == '\'' || previous_line.at(i) == ']'
+                            || previous_line.at(i) == ';' || previous_line.at(i) == '+' || previous_line.at(i) == '-'
+                            || previous_line.at(i) == '!' || previous_line.at(i) == '%' || previous_line.at(i) == '^'
+                            || previous_line.at(i) == '&' || previous_line.at(i) == '*' || previous_line.at(i) == '|')
+                        break;
+                std::cout << previous_line.substr(i + 1, previous_line.length()) << std::endl;
+            }
+
+            // szukamy użytych funkcji
             if (line.find("(") != std::string::npos && brackets_amount > 0)
             {
                 std::string substring = line;
@@ -114,11 +148,11 @@ void check_connections(const std::list<std::string> &list_files)
                 {
                     int i = substring.find("(") - 1;
 
-                    //to handle situations like ((
+                    // to handle situations like ((
                     if (i < 0)
                         i = 1;
 
-                    //cut spaces before function name and (
+                    // cut spaces before function name and (
                     if (substring.at(i) == ' ')
                     {
                         for (; i > 0; --i)
@@ -141,7 +175,7 @@ void check_connections(const std::list<std::string> &list_files)
                             break;
                         }
 
-                    //check if it is object, like std::string str("string"), function here is std::string nor str
+                    // check if it is object, like std::string str("string"), function here is std::string nor str
                     if (substring.at(i) == ' ')
                     {
                         int k = i;
@@ -154,14 +188,15 @@ void check_connections(const std::list<std::string> &list_files)
                         for (int c = 0; c <= k; c++)
                             if (!((substring.at(c) >= 'a' && substring.at(c) <= 'z') ||
                                 (substring.at(c) >= 'A' && substring.at(c) <= 'Z') ||
-                                (substring.at(c) >= '0' && substring.at(c) <= '9') || substring.at(c) == ':'))
+                                (substring.at(c) >= '0' && substring.at(c) <= '9') ||
+                                  substring.at(c) == ':' || substring.at(c) == '_'))
                             {
                                 is_class = false;
                                 break;
                             }
                         if (is_class)
                         {
-                            //to handle situation like else if
+                            // to handle situation like else if
                             if (substring.substr(0, k+1) != "else")
                             {
                                 std::cout << substring.substr(0, k+1) << std::endl;
@@ -175,7 +210,7 @@ void check_connections(const std::list<std::string> &list_files)
                         }
                     }
 
-                    //check if ( is between " or '
+                    // check if ( is between " or '
                     //! \todo handle situation when there is any from the chars above
                     //! in string between " and (
                     //! and there are more than one ( in quote
