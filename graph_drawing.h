@@ -7,7 +7,8 @@ void making_files_graph(std::string graph_name, std::list<std::string> files_lis
     grapg_name << "digraph files_graph\n{\n";
     for (auto it = files_list.begin(); it != files_list.end(); ++it) {
             for (auto const& include : map[*it].includes) {
-                grapg_name << '"' << *it << "_" << map[*it].size << "b" << '"' << "->" << '"' << include << '"' << "\n";
+                grapg_name << '"' << *it << "_" << map[*it].size << "b" << '"' << "->" << '"' << include << '"' << "[label = 1]"<<"\n";
+
             }
     }
     grapg_name << "}";
@@ -19,8 +20,7 @@ void making_files_graph(std::string graph_name, std::list<std::string> files_lis
     script.close();
     system("files_graph.bat");
     system("files_graph.png");
-    
-    
+
     //for Linux
     /*
     std::ofstream script("files_graph.sh");
