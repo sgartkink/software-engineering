@@ -4,7 +4,6 @@
 #include <iostream>
 #include <fstream>
 #include <list>
-#include <algorithm>
 
 bool check_if_line_is_empty(const std::string& line);
 
@@ -20,9 +19,7 @@ void check_connections(const std::list<std::string>& list_files, std::list<funct
     for (auto it = list_files.begin(); it != list_files.end(); ++it)
     {
         std::ifstream file;
-        file.open(*it);
-
-        function_struct function_obj;
+        file.open(*it);       
         
         std::cout << std::endl << "Checking functions for file: " << *it << std::endl;
 
@@ -76,6 +73,7 @@ void check_connections(const std::list<std::string>& list_files, std::list<funct
             std::string function_name;
             std::string inside_function_name;
             // function's definition when { is in other line
+            function_struct function_obj;
             if (previous_line.find("(") != std::string::npos && line.find("{") != std::string::npos && brackets_amount == 0)
             {
                 int i = previous_line.find("(") - 1;
@@ -253,17 +251,10 @@ void check_connections(const std::list<std::string>& list_files, std::list<funct
                     substring = line;
                     substring = substring.substr(substring.find("(") + 1, substring.length());
                     line = substring;
-                }
+                }               
             }
-        	
-            bool add = true;
-        	
-            for (auto const& i : *obj) {
-                if (i.function_name == function_obj.function_name) add = false;
-            }
-        	
-        	if(add)obj->push_back(function_obj);
-        }
+            obj->push_back(function_obj);
+        }      
     }
 }
 

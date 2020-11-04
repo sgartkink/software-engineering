@@ -6,7 +6,6 @@
 #include <map>
 #include <list>
 #include <string>
-#include "check_namespaces_modules/strip_of_useless_characters.h"
 #include "file_size.h"
 
 namespace search
@@ -52,7 +51,8 @@ namespace search
                     auto file_name = line.substr(where);
 
                     // trim string of spaces and quotes
-                    file_name = check_files::strip_of_spaces(file_name);
+                    file_name.erase(std::remove(std::begin(file_name), std::end(file_name), ' '), std::end(file_name));
+                    file_name.erase(std::remove(std::begin(file_name), std::end(file_name), '"'), std::end(file_name));
 
                     // check if string is a name of a header or cpp file
                     if (line.find(".h") != std::string::npos || line.find(".cpp") != std::string::npos)
