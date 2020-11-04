@@ -2,7 +2,6 @@
 #include "list_files.h"
 #include "search.h"
 #include "check_connections.h"
-#include "check_namespaces.h"
 
 int main()
 {
@@ -24,9 +23,18 @@ int main()
         std::cout << "file size: " << map[*it].size << " b" << std::endl << std::endl;
     }
 
-    //check_connections(files_list);
+    std::list<function_struct> function_list;
 
-    check_namespaces::check_connections(files_list);
+    check_connections(files_list, &function_list);
+
+    std::cout << std::endl << std::endl << "Functions: " << std::endl;
+    for (auto const& i : function_list) {
+        std::cout << i.function_name << std::endl;
+    	
+        for (auto const& k : i.inside_function_names) {
+            std::cout << "     " + k << std::endl;
+        }
+    }
 	
     return 0;
 }
