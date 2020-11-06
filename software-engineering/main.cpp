@@ -6,7 +6,7 @@
 
 int main()
 {
-    const std::list<std::string> files_list = list_files::get_list_files(std::filesystem::current_path().string());
+    const std::list<std::string> files_list = list_files::get_list_files("/home/szymon/git/software-engineering/software-engineering/");
 
     our_map map = create_map(files_list);
 

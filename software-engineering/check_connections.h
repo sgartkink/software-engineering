@@ -1,15 +1,43 @@
-#ifndef CHECK_CONNECTIONS_H
+﻿#ifndef CHECK_CONNECTIONS_H
 #define CHECK_CONNECTIONS_H
 
 #include <iostream>
 #include <fstream>
 #include <list>
+#include <vector>
+#include <map>
+
+struct function_connections {
+    std::string _function_name;
+    std::map<std::string, int> _number_of_function_calls;
+
+    function_connections(std::string function_name)
+    {
+        _function_name = function_name;
+    }
+
+    void add_new_function(std::string func)
+    {
+        _number_of_function_calls[func]++;
+    }
+
+    void show_connections()
+    {
+        std::cout << std::endl << "Function: " << _function_name << std::endl;
+        for (auto it = _number_of_function_calls.begin(); it != _number_of_function_calls.end(); ++it)
+            std::cout << "calls: "  << it->first << " " << it->second << " time\\times" << std::endl;
+    }
+};
+
 
 bool check_if_line_is_empty(const std::string &line);
 
 //! \todo handle situation when () are in other line than function name
-void check_connections(const std::list<std::string> &list_files)
+std::vector<function_connections> check_connections(const std::list<std::string> &list_files)
 {
+    std::vector<function_connections> connections;
+    function_connections *current_connection;
+
     for (auto it = list_files.begin(); it != list_files.end(); ++it)
     {
         std::ifstream file;
@@ -73,7 +101,10 @@ void check_connections(const std::list<std::string> &list_files)
                         break;
 
                 std::string function_name = previous_line.substr(i + 1, previous_line.find("(") - i - 1);
-                std::cout << std::endl << "Function: " << function_name << std::endl;
+//                std::cout << std::endl << "Function: " << function_name << std::endl;
+                function_connections func(function_name);
+                connections.push_back(func);
+                current_connection = &connections[connections.size() - 1];
             }
 
             // function's definition when { is in the same line
@@ -93,6 +124,9 @@ void check_connections(const std::list<std::string> &list_files)
                             if (previous_line.at(i) == ' ')
                                 break;
                         std::cout << std::endl << "Function: " << previous_line.substr(i+1, previous_line.length()) << std::endl;
+                        std::string function_name = previous_line.substr(i+1, previous_line.length());
+                        function_connections func(function_name);
+                        connections.push_back(func);
                     }
                     else
                     {
@@ -101,7 +135,10 @@ void check_connections(const std::list<std::string> &list_files)
                                 break;
 
                         std::string function_name = line.substr(i + 1, line.find("(") - i - 1);
-                        std::cout << std::endl << "Function: " << function_name << std::endl;
+//                        std::cout << std::endl << "Function: " << function_name << std::endl;
+                        function_connections func(function_name);
+                        connections.push_back(func);
+                        current_connection = &connections[connections.size() - 1];
                     }
 
                     //cut line
@@ -199,7 +236,9 @@ void check_connections(const std::list<std::string> &list_files)
                             // to handle situation like else if
                             if (substring.substr(0, k+1) != "else")
                             {
-                                std::cout << substring.substr(0, k+1) << std::endl;
+                                std::string function_name = substring.substr(0, k+1);
+//                                std::cout << function_name << std::endl;
+                                current_connection->add_new_function(function_name);
 
                                 substring = line;
                                 substring = substring.substr(substring.find("(") + 1, substring.length());
@@ -221,17 +260,17 @@ void check_connections(const std::list<std::string> &list_files)
                         std::string function_name = substring.substr(i, substring.find("(") - i);
 
                         //!\todo handle situation when there are spaces between ] and (
-                        if (substring.at(i) == '[')
+                        if (substring.at(i) == ']')
                         {
-                            //lambda
+                            current_connection->add_new_function("lambda");
                         }
 
-                        if (function_name != "if" && function_name != "while" && function_name != "for"
+                        if (function_name != "if" && function_name != "while" && function_name != "for" && function_name != "switch"
                                 && function_name.find(".") == std::string::npos && function_name.find("-") == std::string::npos
                                 && function_name.find_first_not_of(' ') != std::string::npos
                                 && function_name.find("!") == std::string::npos)
                         {
-                            std::cout << function_name << std::endl;
+                            current_connection->add_new_function(function_name);
                         }
                     }
 
@@ -242,6 +281,11 @@ void check_connections(const std::list<std::string> &list_files)
             }
         }
     }
+
+    for (auto connection : connections)
+        connection.show_connections();
+
+    return connections;
 }
 
 
