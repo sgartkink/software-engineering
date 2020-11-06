@@ -57,4 +57,4 @@ our_map create_map(std::list<std::string> list_files)
     return map;
 }
 
-}
+}//~namespace search

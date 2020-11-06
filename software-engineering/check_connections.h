@@ -7,9 +7,9 @@
 #include <vector>
 #include <map>
 
-
 struct function_connections {
     std::string _function_name;
+    std::string _namespace = "empty";
     std::map<std::string, int> _number_of_function_calls;
 
     function_connections(std::string function_name)
@@ -48,6 +48,7 @@ struct namespace_connections {
 
 
 bool check_if_line_is_empty(const std::string &line);
+
 
 //! \todo handle situation when () are in other line than function name
 void check_connections(const std::list<std::string> &list_files,
@@ -127,7 +128,10 @@ void check_connections(const std::list<std::string> &list_files,
                 current_connection = &connections[connections.size() - 1];
 
                 if (current_namespace != nullptr)
+                {
                     current_namespace->_functions_included.push_back(function_name);
+                    current_connection->_namespace = current_namespace->_namespace_name;
+                }
             }
 
             // function's definition when { is in the same line
@@ -153,7 +157,10 @@ void check_connections(const std::list<std::string> &list_files,
                         current_connection = &connections[connections.size() - 1];
 
                         if (current_namespace != nullptr)
+                        {
                             current_namespace->_functions_included.push_back(function_name);
+                            current_connection->_namespace = current_namespace->_namespace_name;
+                        }
                     }
                     else
                     {
@@ -167,7 +174,10 @@ void check_connections(const std::list<std::string> &list_files,
                         current_connection = &connections[connections.size() - 1];
 
                         if (current_namespace != nullptr)
+                        {
                             current_namespace->_functions_included.push_back(function_name);
+                            current_connection->_namespace = current_namespace->_namespace_name;
+                        }
                     }
 
                     //cut line
