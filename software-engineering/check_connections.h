@@ -9,6 +9,7 @@
 
 struct function_connections {
     std::string _function_name;
+    std::string _namespace = "empty";
     std::map<std::string, int> _number_of_function_calls;
 
     function_connections(std::string function_name)
@@ -26,17 +27,36 @@ struct function_connections {
         std::cout << std::endl << "Function: " << _function_name << std::endl;
         for (auto it = _number_of_function_calls.begin(); it != _number_of_function_calls.end(); ++it)
             std::cout << "calls: "  << it->first << " " << it->second << " time\\times" << std::endl;
+        std::cout << std::endl;
+    }
+};
+
+
+struct namespace_connections {
+    std::string _namespace_name;
+    std::vector<std::string> _functions_included;
+    std::vector<std::string> _namespaces_included; //! \todo
+
+    void show_included_function()
+    {
+        std::cout << "Namespace: " << _namespace_name << " includes: " << std::endl;
+        for (const std::string &func : _functions_included)
+            std::cout << func << std::endl;
+        std::cout << std::endl;
     }
 };
 
 
 bool check_if_line_is_empty(const std::string &line);
 
+
 //! \todo handle situation when () are in other line than function name
-std::vector<function_connections> check_connections(const std::list<std::string> &list_files)
+void check_connections(const std::list<std::string> &list_files,
+                       std::vector<function_connections> &connections,
+                       std::vector<namespace_connections> &namespaces)
 {
-    std::vector<function_connections> connections;
-    function_connections *current_connection;
+    function_connections *current_connection = nullptr;
+    namespace_connections *current_namespace = nullptr;
 
     for (auto it = list_files.begin(); it != list_files.end(); ++it)
     {
@@ -58,6 +78,8 @@ std::vector<function_connections> check_connections(const std::list<std::string>
         // if this value is 0 we are looking for functions declarations
         // and if greater than 0 we check what functions a given function calls
         int brackets_amount = 0;
+
+        bool is_namespace = false;
 
         while (!file.eof())
         {
@@ -101,10 +123,15 @@ std::vector<function_connections> check_connections(const std::list<std::string>
                         break;
 
                 std::string function_name = previous_line.substr(i + 1, previous_line.find("(") - i - 1);
-//                std::cout << std::endl << "Function: " << function_name << std::endl;
                 function_connections func(function_name);
                 connections.push_back(func);
                 current_connection = &connections[connections.size() - 1];
+
+                if (current_namespace != nullptr)
+                {
+                    current_namespace->_functions_included.push_back(function_name);
+                    current_connection->_namespace = current_namespace->_namespace_name;
+                }
             }
 
             // function's definition when { is in the same line
@@ -123,10 +150,17 @@ std::vector<function_connections> check_connections(const std::list<std::string>
                         for (; i > 0; --i)
                             if (previous_line.at(i) == ' ')
                                 break;
-                        std::cout << std::endl << "Function: " << previous_line.substr(i+1, previous_line.length()) << std::endl;
+
                         std::string function_name = previous_line.substr(i+1, previous_line.length());
                         function_connections func(function_name);
                         connections.push_back(func);
+                        current_connection = &connections[connections.size() - 1];
+
+                        if (current_namespace != nullptr)
+                        {
+                            current_namespace->_functions_included.push_back(function_name);
+                            current_connection->_namespace = current_namespace->_namespace_name;
+                        }
                     }
                     else
                     {
@@ -135,10 +169,15 @@ std::vector<function_connections> check_connections(const std::list<std::string>
                                 break;
 
                         std::string function_name = line.substr(i + 1, line.find("(") - i - 1);
-//                        std::cout << std::endl << "Function: " << function_name << std::endl;
                         function_connections func(function_name);
                         connections.push_back(func);
                         current_connection = &connections[connections.size() - 1];
+
+                        if (current_namespace != nullptr)
+                        {
+                            current_namespace->_functions_included.push_back(function_name);
+                            current_connection->_namespace = current_namespace->_namespace_name;
+                        }
                     }
 
                     //cut line
@@ -154,10 +193,41 @@ std::vector<function_connections> check_connections(const std::list<std::string>
             // bo to "sztucznie nabijało"
             if (line.find("{") != std::string::npos && line.rfind("namespace", 0) == std::string::npos &&
                     line.rfind("class", 0) == std::string::npos && line.rfind("struct", 0) == std::string::npos
-                    && line.find('"{"') == std::string::npos)
+                    && line.find('"{"') == std::string::npos && line.find("'{'") == std::string::npos)
                 brackets_amount++;
+
+            //! \todo handle situation like
+            //! namespace {namespace_name}
+            //! {
+            //! ...
+            //! }
+            else if (line.find("{") != std::string::npos && line.rfind("namespace", 0) != std::string::npos && !is_namespace)
+            {
+                unsigned int i = 9;
+                for (; i < line.size(); ++i)
+                    if (line.at(i) != ' ')
+                        break;
+
+                unsigned int k = i;
+                for (; k < line.size(); ++k)
+                    if (line.at(k) == ' ' || line.at(k) == '{')
+                        break;
+
+                std::string namespace_name = line.substr(i, k-i);
+                namespace_connections namespace_connection;
+                namespace_connection._namespace_name = namespace_name;
+                namespaces.push_back(namespace_connection);
+                current_namespace = &namespaces[namespaces.size() - 1];
+            }
+
             if (line.find("}") != std::string::npos && brackets_amount > 0 && line.find('"}"') == std::string::npos)
                 brackets_amount--;
+            else if (line.find("}") != std::string::npos && brackets_amount == 0 && line.find('"}"') == std::string::npos
+                     && is_namespace == true)
+            {
+                current_namespace = nullptr;
+                is_namespace = false;
+            }
 
             // handle situations like:
             // function
@@ -173,7 +243,7 @@ std::vector<function_connections> check_connections(const std::list<std::string>
                             || previous_line.at(i) == '!' || previous_line.at(i) == '%' || previous_line.at(i) == '^'
                             || previous_line.at(i) == '&' || previous_line.at(i) == '*' || previous_line.at(i) == '|')
                         break;
-                std::cout << previous_line.substr(i + 1, previous_line.length()) << std::endl;
+//                std::cout << previous_line.substr(i + 1, previous_line.length()) << std::endl;
             }
 
             // szukamy użytych funkcji
@@ -212,7 +282,7 @@ std::vector<function_connections> check_connections(const std::list<std::string>
                             break;
                         }
 
-                    // check if it is object, like std::string str("string"), function here is std::string nor str
+                    // check if it is object, like std::string str("string"), function here is std::string not str
                     if (substring.at(i) == ' ')
                     {
                         int k = i;
@@ -237,7 +307,6 @@ std::vector<function_connections> check_connections(const std::list<std::string>
                             if (substring.substr(0, k+1) != "else")
                             {
                                 std::string function_name = substring.substr(0, k+1);
-//                                std::cout << function_name << std::endl;
                                 current_connection->add_new_function(function_name);
 
                                 substring = line;
@@ -281,11 +350,6 @@ std::vector<function_connections> check_connections(const std::list<std::string>
             }
         }
     }
-
-    for (auto connection : connections)
-        connection.show_connections();
-
-    return connections;
 }
 
 

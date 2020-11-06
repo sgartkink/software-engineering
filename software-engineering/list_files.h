@@ -2,26 +2,30 @@
 #include <list>
 #include <filesystem>
 
+namespace ends {
+
+bool ends_with(const std::string& str, const std::string& suffix)
+{
+    return str.size() >= suffix.size() && 0 == str.compare(str.size() - suffix.size(), suffix.size(), suffix);
+}
+
+}//~namespace ends
+
 namespace list_files {
 
-    bool ends_with(const std::string& str, const std::string& suffix)
+std::list<std::string> get_list_files(const std::string &path)
+{
+    std::list<std::string> list;
+
+    for (const auto& dirEntry : std::filesystem::recursive_directory_iterator(path))
     {
-        return str.size() >= suffix.size() && 0 == str.compare(str.size() - suffix.size(), suffix.size(), suffix);
+        const std::string file_path = dirEntry.path().string();
+
+        if (ends::ends_with(file_path, ".h") || ends::ends_with(file_path, ".cpp"))
+            list.push_back(dirEntry.path().string());
     }
 
-    std::list<std::string> get_list_files(const std::string &path)
-    {
-        std::list<std::string> list;
-
-        for (const auto& dirEntry : std::filesystem::recursive_directory_iterator(path))
-        {
-            const std::string file_path = dirEntry.path().string();
-
-            if (ends_with(file_path, ".h") || ends_with(file_path, ".cpp"))
-                list.push_back(dirEntry.path().string());
-        }
-
-        return list;
-    }
-
+    return list;
 }
+
+}//~namespace list_files
