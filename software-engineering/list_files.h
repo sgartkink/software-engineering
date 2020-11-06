@@ -1,4 +1,3 @@
-#pragma once
 #include <iostream>
 #include <list>
 #include <filesystem>
@@ -10,7 +9,7 @@ namespace list_files {
         return str.size() >= suffix.size() && 0 == str.compare(str.size() - suffix.size(), suffix.size(), suffix);
     }
 
-    std::list<std::string> get_list_files(std::string path)
+    std::list<std::string> get_list_files(const std::string &path)
     {
         std::list<std::string> list;
 
@@ -24,6 +23,5 @@ namespace list_files {
 
         return list;
     }
-
 
 }
