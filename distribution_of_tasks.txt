@@ -1,0 +1,42 @@
+Podział zadań w poszczególnych historyjkach:
+
+Historyjka 1
+Szymon:
+- Wyznaczenie połączeń między plikami
+- Wyznaczenie wagi połączenia plików
+- Lista plików w projekcie
+Paweł:
+- Lista plików w projekcie
+- Wielkości plików
+Kewin:
+- Przeszukiwanie plików 
+- Wyświetlanie grafu
+Damian:
+- Usecase diagram
+- Wyświetlanie grafu
+
+
+Historyjka 2
+Szymon:
+- Wyznaczenie połączeń między funkcjami
+- Wyznaczenie wagi połączeń funkcji
+Paweł:
+- Lista funkcji
+Kewin:
+- Wyświetlanie grafu
+Damian:
+- Request diagram
+- Wyświetlanie grafu
+
+
+Historyjka 3
+Szymon:
+- Wyznaczenie połączeń między klasami
+- Wyznaczenie wagi połączeń klas
+Paweł:
+- Lista klas
+Kewin:
+- Wyświetlanie grafu
+Damian:
+- Podział zadań
+- Wyświetlanie grafu
