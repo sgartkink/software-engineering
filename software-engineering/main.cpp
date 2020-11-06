@@ -24,7 +24,7 @@ int main()
         std::cout << "file size: " << map[*it].size << " b" << std::endl << std::endl;
     }
 
-    check_connections(files_list);
+    std::vector<function_connections> connections = check_connections(files_list);
 	
     return 0;
 }
