@@ -17,7 +17,7 @@ struct function_connections {
         _function_name = function_name;
     }
 
-    void add_new_function(const std::string &func)
+    void add_new_function(const std::string& func)
     {
         _number_of_function_calls[func]++;
     }
@@ -26,7 +26,7 @@ struct function_connections {
     {
         std::cout << std::endl << "Function: " << _function_name << std::endl;
         for (auto it = _number_of_function_calls.begin(); it != _number_of_function_calls.end(); ++it)
-            std::cout << "calls: "  << it->first << " " << it->second << " time\\times" << std::endl;
+            std::cout << "calls: " << it->first << " " << it->second << " time\\times" << std::endl;
         std::cout << std::endl;
     }
 };
@@ -40,23 +40,28 @@ struct namespace_connections {
     void show_included_function()
     {
         std::cout << "Namespace: " << _namespace_name << " includes: " << std::endl;
-        for (const std::string &func : _functions_included)
+        for (const std::string& func : _functions_included)
             std::cout << func << std::endl;
         std::cout << std::endl;
     }
 };
 
 
-bool check_if_line_is_empty(const std::string &line);
-
+bool check_if_line_is_empty(const std::string& line)
+{
+    for (unsigned int i = 0; i < line.length(); ++i)
+        if (line.at(i) != ' ')
+            return false;
+    return true;
+}
 
 //! \todo handle situation when () are in other line than function name
-void check_connections(const std::list<std::string> &list_files,
-                       std::vector<function_connections> &connections,
-                       std::vector<namespace_connections> &namespaces)
+void check_connections(const std::list<std::string>& list_files,
+    std::vector<function_connections>& connections,
+    std::vector<namespace_connections>& namespaces)
 {
-    function_connections *current_connection = nullptr;
-    namespace_connections *current_namespace = nullptr;
+    function_connections* current_connection = nullptr;
+    namespace_connections* current_namespace = nullptr;
 
     for (auto it = list_files.begin(); it != list_files.end(); ++it)
     {
@@ -151,7 +156,7 @@ void check_connections(const std::list<std::string> &list_files,
                             if (previous_line.at(i) == ' ')
                                 break;
 
-                        std::string function_name = previous_line.substr(i+1, previous_line.length());
+                        std::string function_name = previous_line.substr(i + 1, previous_line.length());
                         function_connections func(function_name);
                         connections.push_back(func);
                         current_connection = &connections[connections.size() - 1];
@@ -192,8 +197,8 @@ void check_connections(const std::list<std::string> &list_files,
             // line.find('"{"') oznacza żeby nie brać pod uwagę ifów, w których ten warunek jest sprawdzany,
             // bo to "sztucznie nabijało"
             if (line.find("{") != std::string::npos && line.rfind("namespace", 0) == std::string::npos &&
-                    line.rfind("class", 0) == std::string::npos && line.rfind("struct", 0) == std::string::npos
-                    && line.find('"{"') == std::string::npos && line.find("'{'") == std::string::npos)
+                line.rfind("class", 0) == std::string::npos && line.rfind("struct", 0) == std::string::npos
+                && line.find('"{"') == std::string::npos && line.find("'{'") == std::string::npos)
                 brackets_amount++;
 
             //! \todo handle situation like
@@ -213,7 +218,7 @@ void check_connections(const std::list<std::string> &list_files,
                     if (line.at(k) == ' ' || line.at(k) == '{')
                         break;
 
-                std::string namespace_name = line.substr(i, k-i);
+                std::string namespace_name = line.substr(i, k - i);
                 namespace_connections namespace_connection;
                 namespace_connection._namespace_name = namespace_name;
                 namespaces.push_back(namespace_connection);
@@ -223,7 +228,7 @@ void check_connections(const std::list<std::string> &list_files,
             if (line.find("}") != std::string::npos && brackets_amount > 0 && line.find('"}"') == std::string::npos)
                 brackets_amount--;
             else if (line.find("}") != std::string::npos && brackets_amount == 0 && line.find('"}"') == std::string::npos
-                     && is_namespace == true)
+                && is_namespace == true)
             {
                 current_namespace = nullptr;
                 is_namespace = false;
@@ -237,13 +242,13 @@ void check_connections(const std::list<std::string> &list_files,
                 int i = previous_line.length() - 1;
                 for (; i > 0; --i)
                     if (previous_line.at(i) == ' ' || previous_line.at(i) == '?' || previous_line.at(i) == '.'
-                            || previous_line.at(i) == '>' || previous_line.at(i) == '=' || previous_line.at(i) == '('
-                            || previous_line.at(i) == '"' || previous_line.at(i) == '\'' || previous_line.at(i) == ']'
-                            || previous_line.at(i) == ';' || previous_line.at(i) == '+' || previous_line.at(i) == '-'
-                            || previous_line.at(i) == '!' || previous_line.at(i) == '%' || previous_line.at(i) == '^'
-                            || previous_line.at(i) == '&' || previous_line.at(i) == '*' || previous_line.at(i) == '|')
+                        || previous_line.at(i) == '>' || previous_line.at(i) == '=' || previous_line.at(i) == '('
+                        || previous_line.at(i) == '"' || previous_line.at(i) == '\'' || previous_line.at(i) == ']'
+                        || previous_line.at(i) == ';' || previous_line.at(i) == '+' || previous_line.at(i) == '-'
+                        || previous_line.at(i) == '!' || previous_line.at(i) == '%' || previous_line.at(i) == '^'
+                        || previous_line.at(i) == '&' || previous_line.at(i) == '*' || previous_line.at(i) == '|')
                         break;
-//                std::cout << previous_line.substr(i + 1, previous_line.length()) << std::endl;
+                //                std::cout << previous_line.substr(i + 1, previous_line.length()) << std::endl;
             }
 
             // szukamy użytych funkcji
@@ -266,17 +271,17 @@ void check_connections(const std::list<std::string> &list_files,
                             if (substring.at(i) != ' ')
                                 break;
                         line = substring;
-                        substring = substring.substr(0, i+1);
+                        substring = substring.substr(0, i + 1);
                     }
 
                     bool increment_i = false;
                     for (; i > 0; --i)
                         if (substring.at(i) == ' ' || substring.at(i) == ':' || substring.at(i) == '.' || substring.at(i) == '>'
-                                || substring.at(i) == '=' || substring.at(i) == '(' || substring.at(i) == '"'
-                                || substring.at(i) == '\'' || substring.at(i) == ']' || substring.at(i) == ';'
-                                || substring.at(i) == '+' || substring.at(i) == '-' || substring.at(i) == '!' || substring.at(i) == '%'
-                                || substring.at(i) == '^' || substring.at(i) == '&' || substring.at(i) == '*'
-                                || substring.at(i) == '|' || substring.at(i) == '?')
+                            || substring.at(i) == '=' || substring.at(i) == '(' || substring.at(i) == '"'
+                            || substring.at(i) == '\'' || substring.at(i) == ']' || substring.at(i) == ';'
+                            || substring.at(i) == '+' || substring.at(i) == '-' || substring.at(i) == '!' || substring.at(i) == '%'
+                            || substring.at(i) == '^' || substring.at(i) == '&' || substring.at(i) == '*'
+                            || substring.at(i) == '|' || substring.at(i) == '?')
                         {
                             increment_i = true;
                             break;
@@ -296,7 +301,7 @@ void check_connections(const std::list<std::string> &list_files,
                             if (!((substring.at(c) >= 'a' && substring.at(c) <= 'z') ||
                                 (substring.at(c) >= 'A' && substring.at(c) <= 'Z') ||
                                 (substring.at(c) >= '0' && substring.at(c) <= '9') ||
-                                  substring.at(c) == ':' || substring.at(c) == '_'))
+                                substring.at(c) == ':' || substring.at(c) == '_'))
                             {
                                 is_class = false;
                                 break;
@@ -304,9 +309,9 @@ void check_connections(const std::list<std::string> &list_files,
                         if (is_class)
                         {
                             // to handle situation like else if
-                            if (substring.substr(0, k+1) != "else")
+                            if (substring.substr(0, k + 1) != "else")
                             {
-                                std::string function_name = substring.substr(0, k+1);
+                                std::string function_name = substring.substr(0, k + 1);
                                 current_connection->add_new_function(function_name);
 
                                 substring = line;
@@ -335,9 +340,9 @@ void check_connections(const std::list<std::string> &list_files,
                         }
 
                         if (function_name != "if" && function_name != "while" && function_name != "for" && function_name != "switch"
-                                && function_name.find(".") == std::string::npos && function_name.find("-") == std::string::npos
-                                && function_name.find_first_not_of(' ') != std::string::npos
-                                && function_name.find("!") == std::string::npos)
+                            && function_name.find(".") == std::string::npos && function_name.find("-") == std::string::npos
+                            && function_name.find_first_not_of(' ') != std::string::npos
+                            && function_name.find("!") == std::string::npos)
                         {
                             current_connection->add_new_function(function_name);
                         }
@@ -350,15 +355,7 @@ void check_connections(const std::list<std::string> &list_files,
             }
         }
     }
-}
+} 
 
-
-bool check_if_line_is_empty(const std::string &line)
-{
-    for (unsigned int i = 0; i < line.length(); ++i)
-        if (line.at(i) != ' ')
-            return false;
-    return true;
-}
 
 #endif // CHECK_CONNECTIONS_H

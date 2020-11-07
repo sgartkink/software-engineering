@@ -4,8 +4,6 @@
 #include <map>
 #include <list>
 #include <string>
-#include <algorithm>
-
 #include "file_size.h"
 
 namespace search {
