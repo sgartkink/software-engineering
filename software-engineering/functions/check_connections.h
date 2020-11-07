@@ -1,38 +1,18 @@
-﻿#ifndef CHECK_CONNECTIONS_H
-#define CHECK_CONNECTIONS_H
+﻿#pragma once
 
 #include <iostream>
 #include <fstream>
 #include <list>
 #include <vector>
-#include <map>
-
-struct function_connections {
-    std::string _function_name;
-    std::string _namespace = "empty";
-    std::map<std::string, int> _number_of_function_calls;
-
-    function_connections(std::string function_name)
-    {
-        _function_name = function_name;
-    }
-
-    void add_new_function(const std::string& func)
-    {
-        _number_of_function_calls[func]++;
-    }
-
-    void show_connections()
-    {
-        std::cout << std::endl << "Function: " << _function_name << std::endl;
-        for (auto it = _number_of_function_calls.begin(); it != _number_of_function_calls.end(); ++it)
-            std::cout << "calls: " << it->first << " " << it->second << " time\\times" << std::endl;
-        std::cout << std::endl;
-    }
-};
 
 
-struct namespace_connections {
+#include "../structs/FunctionConnections.h"
+#include "check_connections_modules/check_if_line_is_empty.h"
+#include "check_connections_modules/check_if_line_starts_with_comment.h"
+#include "check_connections_modules/increment_bracket_count.h"
+#include "check_connections_modules/should_increment.h"
+
+struct NamespaceConnections {  //! \todo extract this struct into separate file
     std::string _namespace_name;
     std::vector<std::string> _functions_included;
     std::vector<std::string> _namespaces_included; //! \todo
@@ -46,29 +26,18 @@ struct namespace_connections {
     }
 };
 
-
-bool check_if_line_is_empty(const std::string& line)
-{
-    for (unsigned int i = 0; i < line.length(); ++i)
-        if (line.at(i) != ' ')
-            return false;
-    return true;
-}
-
 //! \todo handle situation when () are in other line than function name
 void check_connections(const std::list<std::string>& list_files,
-    std::vector<function_connections>& connections,
-    std::vector<namespace_connections>& namespaces)
+    std::vector<FunctionConnections>& connections,
+    std::vector<NamespaceConnections>& namespaces)
 {
-    function_connections* current_connection = nullptr;
-    namespace_connections* current_namespace = nullptr;
+    FunctionConnections* current_connection = nullptr;
+    NamespaceConnections* current_namespace = nullptr;
 
     for (auto it = list_files.begin(); it != list_files.end(); ++it)
     {
         std::ifstream file;
         file.open(*it);
-
-        std::cout << std::endl << "Checking functions for file: " << *it << std::endl;
 
         if (file.fail())
         {
@@ -115,9 +84,8 @@ void check_connections(const std::list<std::string>& list_files,
 
             // check if line starts with a comment
             //! \todo take into account a block of comments
-            if (line.length() >= 1)
-                if (line.rfind("//", 0) != std::string::npos || line.rfind("/*", 0) != std::string::npos)
-                    continue;
+			if(check_if_line_starts_with_comment(line))
+                continue;
 
             // function's definition when { is in other line
             if (previous_line.find("(") != std::string::npos && line.find("{") != std::string::npos && brackets_amount == 0)
@@ -128,7 +96,7 @@ void check_connections(const std::list<std::string>& list_files,
                         break;
 
                 std::string function_name = previous_line.substr(i + 1, previous_line.find("(") - i - 1);
-                function_connections func(function_name);
+                FunctionConnections func(function_name);
                 connections.push_back(func);
                 current_connection = &connections[connections.size() - 1];
 
@@ -157,7 +125,7 @@ void check_connections(const std::list<std::string>& list_files,
                                 break;
 
                         std::string function_name = previous_line.substr(i + 1, previous_line.length());
-                        function_connections func(function_name);
+                        FunctionConnections func(function_name);
                         connections.push_back(func);
                         current_connection = &connections[connections.size() - 1];
 
@@ -174,7 +142,7 @@ void check_connections(const std::list<std::string>& list_files,
                                 break;
 
                         std::string function_name = line.substr(i + 1, line.find("(") - i - 1);
-                        function_connections func(function_name);
+                        FunctionConnections func(function_name);
                         connections.push_back(func);
                         current_connection = &connections[connections.size() - 1];
 
@@ -196,9 +164,7 @@ void check_connections(const std::list<std::string>& list_files,
             //! \todo } is in the end of the line
             // line.find('"{"') oznacza żeby nie brać pod uwagę ifów, w których ten warunek jest sprawdzany,
             // bo to "sztucznie nabijało"
-            if (line.find("{") != std::string::npos && line.rfind("namespace", 0) == std::string::npos &&
-                line.rfind("class", 0) == std::string::npos && line.rfind("struct", 0) == std::string::npos
-                && line.find('"{"') == std::string::npos && line.find("'{'") == std::string::npos)
+            if (increment_bracket_count(line))
                 brackets_amount++;
 
             //! \todo handle situation like
@@ -219,7 +185,7 @@ void check_connections(const std::list<std::string>& list_files,
                         break;
 
                 std::string namespace_name = line.substr(i, k - i);
-                namespace_connections namespace_connection;
+                NamespaceConnections namespace_connection;
                 namespace_connection._namespace_name = namespace_name;
                 namespaces.push_back(namespace_connection);
                 current_namespace = &namespaces[namespaces.size() - 1];
@@ -241,12 +207,7 @@ void check_connections(const std::list<std::string>& list_files,
             {
                 int i = previous_line.length() - 1;
                 for (; i > 0; --i)
-                    if (previous_line.at(i) == ' ' || previous_line.at(i) == '?' || previous_line.at(i) == '.'
-                        || previous_line.at(i) == '>' || previous_line.at(i) == '=' || previous_line.at(i) == '('
-                        || previous_line.at(i) == '"' || previous_line.at(i) == '\'' || previous_line.at(i) == ']'
-                        || previous_line.at(i) == ';' || previous_line.at(i) == '+' || previous_line.at(i) == '-'
-                        || previous_line.at(i) == '!' || previous_line.at(i) == '%' || previous_line.at(i) == '^'
-                        || previous_line.at(i) == '&' || previous_line.at(i) == '*' || previous_line.at(i) == '|')
+                    if (should_increment(previous_line, i))
                         break;
                 //                std::cout << previous_line.substr(i + 1, previous_line.length()) << std::endl;
             }
@@ -276,12 +237,7 @@ void check_connections(const std::list<std::string>& list_files,
 
                     bool increment_i = false;
                     for (; i > 0; --i)
-                        if (substring.at(i) == ' ' || substring.at(i) == ':' || substring.at(i) == '.' || substring.at(i) == '>'
-                            || substring.at(i) == '=' || substring.at(i) == '(' || substring.at(i) == '"'
-                            || substring.at(i) == '\'' || substring.at(i) == ']' || substring.at(i) == ';'
-                            || substring.at(i) == '+' || substring.at(i) == '-' || substring.at(i) == '!' || substring.at(i) == '%'
-                            || substring.at(i) == '^' || substring.at(i) == '&' || substring.at(i) == '*'
-                            || substring.at(i) == '|' || substring.at(i) == '?')
+                        if (should_increment(substring, i))
                         {
                             increment_i = true;
                             break;
@@ -356,6 +312,3 @@ void check_connections(const std::list<std::string>& list_files,
         }
     }
 } 
-
-
-#endif // CHECK_CONNECTIONS_H
