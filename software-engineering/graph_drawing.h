@@ -24,6 +24,33 @@ void bash_files(std::string graph_name) {
     system((png_name).c_str());
 #endif
 }
+std::string getname(std::string s) {
+    unsigned long n = s.length();
+    char* tab = NULL;
+    int i = 0;
+    tab = new char[n + 1];
+    for (int j = 0; j <= n; j++)
+        tab[j] = 0;
+    std::string a = "";
+    s.copy(tab, s.size());
+    tab[s.size()] = '\0';
+    
+    while (tab[n] != 47 && tab[n] != 92) {
+        a += tab[n];
+        if (tab[n - 3] == 46 && tab[n - 2] == 104) {
+            a += tab[n - 1];
+            break;
+        }
+        n--;
+    }
+    n = a.length();
+    for (i = 0; i < n/ 2; i++)
+        std::swap(a[i], a[n - i - 1]);
+    int x = a.length();
+    a.erase((x - 1), 1);
+    tab = NULL;
+    return a;
+}
 void making_files_graph(std::string graph_name, std::list<std::string> files_list, search::our_map map) {
     std::string x = graph_name + ".gv";
     std::ofstream file(x);
