@@ -1,4 +1,4 @@
-﻿#pragma once
+#pragma once
 
 #include <iostream>
 #include <fstream>
@@ -23,6 +23,13 @@ struct NamespaceConnections {  //! \todo extract this struct into separate file
         for (const std::string& func : _functions_included)
             std::cout << func << std::endl;
         std::cout << std::endl;
+    }
+    void includes_to_graph(std::string name) {
+        std::fstream x;
+        x.open(name, std::ios::out | std::ios::app);
+        for (const std::string& func : _functions_included)
+            x << '"' << _namespace_name << '"' << "->" << '"' << func << '"' << "\n";
+        x.close();
     }
 };
 
