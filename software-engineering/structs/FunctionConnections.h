@@ -1,6 +1,7 @@
 #pragma once
 #include <iostream>
 #include <ostream>
+#include <fstream>
 
 struct FunctionConnections
 {
@@ -24,6 +25,14 @@ struct FunctionConnections
         for (auto it = _number_of_function_calls.begin(); it != _number_of_function_calls.end(); ++it)
             std::cout << "calls: " << it->first << " " << it->second << " time\\times" << std::endl;
         std::cout << std::endl;
+    }
+    void connections_to_graph(std::string name)
+    {
+        std::fstream x;
+        x.open(name, std::ios::out | std::ios::app);
+        for (auto it = _number_of_function_calls.begin(); it != _number_of_function_calls.end(); ++it)
+            x << '"' << _function_name << '"' << "->" << '"' << it->first << '"' << "[label = " << it->second << " ];\n";
+        x.close();
     }
 };
 
