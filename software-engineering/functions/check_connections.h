@@ -28,7 +28,7 @@ struct NamespaceConnections {  //! \todo extract this struct into separate file
         std::fstream x;
         x.open(name, std::ios::out | std::ios::app);
         for (const std::string& func : _functions_included)
-            x << '"' << _namespace_name << '"' << "->" << '"' << func << '"' << "\n";
+            x << '"' << func << '"' << "->" << '"' << _namespace_name << '"' << "\n";
         x.close();
     }
 };
