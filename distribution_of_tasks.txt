@@ -38,5 +38,17 @@ Paweł:
 Kewin:
 - Wyświetlanie grafu
 Damian:
-- Podział zadań
+- Activity diagram
 - Wyświetlanie grafu
+
+
+Historyjka 4
+Szymon:
+- Optymalizacja i uporządkowanie kodu
+Paweł:
+- Optymalizacja i uporządkowanie kodu
+Kewin:
+- Dopracowanie funkcji związanych z grafami
+Damian:
+- Class diagram
+- Dopracowanie wyświetlania grafów
