@@ -1,5 +1,6 @@
 #include <fstream>
 #include <sstream>
+#include <map>
 #include <vector>
 
 struct paradigmID {
@@ -7,33 +8,42 @@ struct paradigmID {
 	int fileID;
 };
 std::vector<paradigmID> filesID;
-std::map<paradigmID, std::string> IDmap;
+std::map<int, std::vector<int>> IDmap;
+int findID(std::string x) {
+	for (int i = 0; i < filesID.size(); i++) {
+		if (filesID[i].filename == x)
+			return filesID[i].fileID;
+	}
+}
 void files_graph(std::string file_name, std::list<std::string> files_list, search::our_map map) {
-	std::string x = file_name + ".csv";
-	std::stringstream name;
-	std::string s, name2;
-	std::ofstream file(x);
-	int usecaseid = 1, modelid = 3;
-	std::string userid = "UC01";  //!!!
-	file << "Diagram;ID;Name;Type;Description;Parent;Model;Delete ?\n";
-	file << ";" << usecaseid << ";" << file_name << "; UseCaseDiagram;;;;No\n\n";
-		++usecaseid;
+	std::stringstream name, name2;
+	std::string s, s2, name3, name4;
+	int usecaseid = 1;
 	for (auto it = files_list.begin(); it != files_list.end(); ++it) {
 		name << *it;
 		s = name.str();
-		name2 = getname(s);
-		file << "Use Case;ID;Model ID;Name;Parent User ID;User ID;Stereotypes;Rank;Abstract;Leaf;Root;Business Model;Description;Transit From;Transit To;Parent ID;Parent Name;Delete ?\n";
-		file << ";" << usecaseid << ";" << modelid << ";" << name2 << ";;"<< userid <<";<<UseCase>>;Unspecified;No;No;No;No;;;;;;No\n\n";
-		filesID.push_back({name2,usecaseid});
-
+		name3 = getname(s);
+		filesID.push_back({name3,usecaseid});
 		usecaseid++;
-		modelid+=2;
 	}
-
-	for (int i = 0; i < filesID.size(); i++) {
-		std::cout << filesID[i].filename << " "<< filesID[i].fileID << std::endl;
+	for (auto it = files_list.begin(); it != files_list.end(); ++it) {
+		name << *it;
+		s = name.str();
+		name3 = getname(s);
+		filesID.push_back({ name3,usecaseid });
+		for (auto const& include : map[*it].includes) {
+			int j = 0;
+			name2 << include;
+			s2 = name2.str();
+			name4 = getname(s2);
+			IDmap[usecaseid].push_back(findID(name4));
+			j++;
+		}
+		usecaseid++;
 	}
-	file << "Include;ID;Model ID;Name;Stereotypes;Including Case;Addition;Visibility;Description;Transit From;Transit To;Parent ID;Parent Name;Delete ?\n";
-
-	file.close();
+	for (auto const& x : IDmap) {
+		std::cout << x.first << ":" << std::endl;
+		for(int i = 0; i < x.second.size();i++)
+			std::cout << x.second[i] << std::endl;
+	}
 }
