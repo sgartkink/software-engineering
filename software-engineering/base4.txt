@@ -1,0 +1,8 @@
+Background="rgb(122, 207, 245)" Width="110" ConnectToPoint="true" ConnectionPointType="2" CoverConnector="false" DisplayOption="3" Foreground="rgb(0, 0, 0)" Height="60"  ModelElementNameAlignment="9" OverrideAppearanceWithStereotypeIcon="true" ParentConnectorDTheta="0.0" ParentConnectorHeaderLength="40" ParentConnectorLineLength="10" PresentationOption="4" PrimitiveShapeType="0" RequestDefaultSize="false" RequestFitSize="false" RequestFitSizeFromCenter="false" RequestResetCaption="false" RequestResetCaptionFitWidth="false" RequestResetCaptionSize="false" RequestSetSizeOption="0" Selectable="true" ShowAllocatedFrom="0" ShowAllocatedTo="0" ShowExtensionPoint="true" ShowStereotypeIconName="0" >
+    <ElementFont Color="rgb(0, 0, 0)" Name="Dialog" Size="11" Style="0"/>
+    <Line Cap="0" Color="rgb(0, 0, 0)" Transparency="0" Weight="1.0">
+        <Stroke/>
+    </Line>
+    <Caption Height="60" InternalHeight="-2147483648" InternalWidth="-2147483648" Side="Center" Visible="true" Width="110" X="0" Y="0"/>
+    <FillColor Color="rgb(122, 207, 245)" Style="1" Transparency="0" Type="1"/>
+</UseCase>
