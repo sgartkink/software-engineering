@@ -1,0 +1,6 @@
+Background="rgb(122, 207, 245)" ConnectorLabelOrientation="4" ConnectorLineJumps="4" ConnectorStyle="Follow Diagram" Foreground="rgb(0, 0, 0)" From="id1s" FromConnectType="0" FromPinType="1" FromShapeXDiff="0" FromShapeYDiff="0" Height="163" ModelElementNameAlignment="9" Name="1" PaintThroughLabel="2" RequestRebuild="false" RequestRebuildFromEnd="false" RequestRebuildToEnd="false" RequestResetCaption="false" RequestResetCaptionFitWidth="false" RequestResetCaptionSize="false" Selectable="true" ShowConnectorName="2" ToConnectType="0" ToPinType="1" ToShapeXDiff="0" ToShapeYDiff="0" UseFromShapeCenter="true" UseToShapeCenter="true">
+    <ElementFont Color="rgb(0, 0, 0)" Name="Dialog" Size="11" Style="0"/>
+    <Line Cap="0" Color="rgb(0, 0, 0)" Transparency="0" Weight="1.0">
+        <Stroke/>
+    </Line>
+    <Caption Height="30" InternalHeight="-2147483648" InternalWidth="-2147483648" Side="None" Visible="true" Width="80"
