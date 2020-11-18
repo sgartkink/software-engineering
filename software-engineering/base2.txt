@@ -1,5 +1,0 @@
-</ModelChildren>
-				</ModelRelationshipContainer>
-			</ModelChildren>
-		</ModelRelationshipContainer>
-		<Stereotype Abstract="false" BacklogActivityId="0" BaseType="Include" Documentation_plain="" IconPath_IsNull="true" Id="connection" Leaf="false" Name="Include" PmAuthor="user" PmCreateDateTime="2020-10-19T21:45:40.384" PmLastModified="2020-10-19T21:45:50.467" QualityReason_IsNull="true" QualityScore="-1" Root="false" UserIDLastNumericValue="0" UserID_IsNull="true"/> 
