@@ -4,6 +4,7 @@
 #include <string>
 #include <math.h>
 
+
 int x = 150;
 int y = 50;
 class paradigmID {
@@ -17,10 +18,11 @@ public:
     paradigmID(const std::string &s1 = " ", const std::string &i = " ") : filename(s1), fileID(i) {}
 };
 
+
 std::map<std::string, int> filesID;
 std::map<int, std::vector<int>> IDmap;
 std::vector<paradigmID> Vec;
-void files_graph(std::string file_name, std::list<std::string> files_list, our_map map) {
+void files_graph(std::string file_name, std::list<std::string> files_list, search::our_map map) {
     
     std::stringstream name, name2;
     std::string s, s2, name3, name4, id;
@@ -31,7 +33,7 @@ void files_graph(std::string file_name, std::list<std::string> files_list, our_m
     for (auto it = files_list.begin(); it != files_list.end(); ++it) {
         i++;
     }
-    paradigmID plik[i + 1];
+    paradigmID *plik = new paradigmID[i+1];
     
     for (auto it = files_list.begin(); it != files_list.end(); ++it) {
         name << *it;
@@ -50,18 +52,19 @@ void files_graph(std::string file_name, std::list<std::string> files_list, our_m
             name2 << include;
             s2 = name2.str();
             name4 = getname(s2);
+            if(filesID.find(name4)->second != 0)
             IDmap[usecaseid].push_back(filesID.find(name4)->second);
         }
         usecaseid++;
     }
 
-    for (auto const& x : IDmap) {
-        std::cout << x.first << ":" << std::endl;
-        for (int i = 0; i < x.second.size(); i++)
-            std::cout << x.second[i] << std::endl;
+    for (auto const& t : IDmap) {
+        std::cout << t.first << ":" << std::endl;
+        for (int i = 0; i < t.second.size(); i++)
+            std::cout << t.second[i] << std::endl;
     }
-    for (auto const& x : filesID) {
-        std::cout << x.first << ":" << x.second << std::endl;
+    for (auto const& t : filesID) {
+        std::cout << t.first << ":" << t.second << std::endl;
         
     }
     
@@ -91,12 +94,42 @@ void files_graph(std::string file_name, std::list<std::string> files_list, our_m
     
     fo << "\n";
     
+    int z, z2, k;
+    for (auto const& t : IDmap) {
+        z = t.first;
+        y = plik[z].Y + 100;
+        x = plik[z].X;
+        for (int j = 0; j < t.second.size(); j++)
+        {
+            z2 = t.second[j];
+    fo << "<Include From=" << '"' << plik[z].fileID << '"' << " Id=" << '"' << plik[z].fileID << "c" << plik[z].c << '"' << " Name=" << '"' << 1 << '"' << " To=" << '"' << plik[z2].fileID << '"' << "><MasterView><Include Idref=" << '"' << plik[z].fileID << "v" << plik[z].v << '"' << " Name=" << '"' << 1 << '"' << "/></MasterView></Include>";
+            plik[z].v++;
+            plik[z].c++;
+            k = 1;
+            for(int j = 1; j <= i; j++)
+            {
+                if(j == z2)
+                    continue;
+                if(abs(plik[j].X - x) < 15 && abs(plik[j].Y - y) < 15)
+                    k = 0;
+            }
+            if(k == 0){
+            plik[z2].Y = y + 100;
+            plik[z2].X = x;
+            }else
+            {
+            plik[z2].Y = y;
+            plik[z2].X = x;
+            }
+            x += 180;
+        }
+    }
     
-    fo << "<Include From=" << '"' << plik[1].fileID << '"' << " Id=" << '"' << plik[1].fileID << "c" << plik[1].c << '"' << " Name=" << '"' << 1 << '"' << " To=" << '"' << plik[2].fileID << '"' << "><MasterView><Include Idref=" << '"' << plik[1].fileID << "v" << plik[1].v << '"' << " Name=" << '"' << 1 << '"' << "/></MasterView></Include>";
+    /* fo << "<Include From=" << '"' << plik[1].fileID << '"' << " Id=" << '"' << plik[1].fileID << "c" << plik[1].c << '"' << " Name=" << '"' << 1 << '"' << " To=" << '"' << plik[2].fileID << '"' << "><MasterView><Include Idref=" << '"' << plik[1].fileID << "v" << plik[1].v << '"' << " Name=" << '"' << 1 << '"' << "/></MasterView></Include>";
     plik[1].v++;
     plik[1].c++;
     y += 100;
-    plik[2].Y += y;
+    plik[2].Y += y; */
 
        // fo <<"include..."; - for includes
     
@@ -105,11 +138,9 @@ void files_graph(std::string file_name, std::list<std::string> files_list, our_m
         fo<<str;
     }
     
-
-    fo << "\n<UseCase Id=" << '"' << plik[1].fileID << '"' << " Name=" << '"' << plik[1].filename << '"' << ">" <<
-    "\n</UseCase>";
-    fo << "\n<UseCase Id=" << '"' << plik[2].fileID << '"' << " Name=" << '"' << plik[2].filename << '"' << ">" <<
-    "\n</UseCase>";
+    for(int j = 1; j <= i; j++)
+    fo << "\n<UseCase Id=" << '"' << plik[j].fileID << '"' << " Name=" << '"' << plik[j].filename << '"' << ">" << "\n</UseCase>";
+  //  fo << "\n<UseCase Id=" << '"' << plik[2].fileID << '"' << " Name=" << '"' << plik[2].filename << '"' << ">" << "\n</UseCase>";
     
     fo << "</Models>\n<Diagrams>\n";
     
@@ -119,11 +150,21 @@ void files_graph(std::string file_name, std::list<std::string> files_list, our_m
        }
     
     fo << "\n";
+    for(int j = 1; j <= i; j++)
+    {
+    plik[j].c = 1;
+    plik[j].v = 1;
+    }
     
-    plik[1].c = 1;
-    plik[1].v = 1;
-    
-    fo << "<Include Id=" << '"' << plik[1].fileID << "v" << plik[1].v << '"' << " MetaModelElement=" << '"' << plik[1].fileID << "c" << plik[1].c << '"' << " Model=" << '"' << plik[1].fileID << "c" << plik[1].c << '"' << " ZOrder=" << '"' << ZOrder << '"' << " To=" << '"' << plik[2].fileID << "s" << '"' << " ";
+    for (auto const& t : IDmap) {
+    z = t.first;
+    y = plik[z].Y + 100;
+    x = plik[z].X;
+    for (int j = 0; j < t.second.size(); j++)
+    {
+        z2 = t.second[j];
+        
+    fo << "<Include Id=" << '"' << plik[z].fileID << "v" << plik[z].v << '"' << " From=" << '"' << plik[z].fileID << "s" << '"' << " MetaModelElement=" << '"' << plik[z].fileID << "c" << plik[z].c << '"' << " Model=" << '"' << plik[z].fileID << "c" << plik[z].c << '"' << " ZOrder=" << '"' << ZOrder << '"' << " To=" << '"' << plik[z2].fileID << "s" << '"' << " ";
     while(std::getline(fi5, str))
           {
               fo<<str;
@@ -131,15 +172,20 @@ void files_graph(std::string file_name, std::list<std::string> files_list, our_m
     ZOrder += 2;
     fi5.clear();
     fi5.seekg(0);
-    
-    fo << " X=" << '"' <<  plik[1].X + (plik[2].X - plik[1].X)/2 << '"' << " Y=" << '"' << plik[1].Y + (plik[2].Y - plik[1].Y)/2 << '"' << "/></Include>";
+    fo << " X=" << '"' <<  55 + plik[z].X + (plik[z2].X - plik[z].X)/2 << '"' << " Y=" << '"' << 30 + plik[z].Y + (plik[z2].Y - plik[z].Y)/2 << '"' << "/></Include>";
+        plik[z].v++;
+        plik[z].c++;
+        
+    }
+    }
     
      // fo <<"include..."; - for includes x2
     
     fo << "</Connectors><Shapes>";
     
-    
-    fo << "\n<UseCase Id=" << '"' << plik[1].fileID << "s" << '"' << " MetaModelElement=" << '"' << plik[1].fileID << '"' << " Model=" << '"' << plik[1].fileID << '"' << " Name=" << '"' << plik[1].filename << '"' <<" X=" << '"' << plik[1].X << '"' << " Y=" << '"' << plik[1].Y << '"' <<" ZOrder=" << '"' << ZOrder << '"' << " ";
+    for(int j = 1; j <= i; j++)
+    {
+    fo << "\n<UseCase Id=" << '"' << plik[j].fileID << "s" << '"' << " MetaModelElement=" << '"' << plik[j].fileID << '"' << " Model=" << '"' << plik[j].fileID << '"' << " Name=" << '"' << plik[j].filename << '"' <<" X=" << '"' << plik[j].X << '"' << " Y=" << '"' << plik[j].Y << '"' <<" ZOrder=" << '"' << ZOrder << '"' << " ";
     while(std::getline(fi4, str))
           {
               fo<<str;
@@ -147,15 +193,7 @@ void files_graph(std::string file_name, std::list<std::string> files_list, our_m
     ZOrder += 2;
     fi4.clear();
     fi4.seekg(0);
-    
-   fo << "\n<UseCase Id=" << '"' << plik[2].fileID << "s" << '"' << " MetaModelElement=" << '"' << plik[2].fileID << '"' << " Model=" << '"' << plik[2].fileID << '"' << " Name=" << '"' << plik[2].filename << '"' <<" X=" << '"' << plik[2].X << '"' << " Y=" << '"' << plik[2].Y << '"' <<" ZOrder=" << '"' << ZOrder << '"' << " ";
-    while(std::getline(fi4, str))
-          {
-              fo<<str;
-          }
-    ZOrder += 2;
-    fi4.clear();
-    fi4.seekg(0);
+    }
     
     
     
