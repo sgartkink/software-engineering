@@ -114,6 +114,32 @@ void check_connections(const std::list<std::string>& list_files,
                 }
             }
 
+            //namespace's name when { is in other line
+            else if (previous_line.rfind("namespace", 0) != std::string::npos && line.find("{") != std::string::npos && !is_namespace && brackets_amount == 0
+                     && previous_line.find("{") == std::string::npos)
+            {
+                std::string namespace_name = previous_line.substr(10);
+                unsigned int i = 0;
+                for (; i < namespace_name.size(); ++i)
+                    if (namespace_name.at(i) != ' ')
+                        break;
+
+                namespace_name.substr(i);
+                i = namespace_name.size() - 1;
+
+                for (; i > 0; --i)
+                    if (namespace_name.at(i) != ' ')
+                        break;
+
+                namespace_name.substr(0, i);
+
+                NamespaceConnections namespace_connection;
+                namespace_connection._namespace_name = namespace_name;
+                namespaces.push_back(namespace_connection);
+                current_namespace = &namespaces[namespaces.size() - 1];
+                is_namespace = true;
+            }
+
             // function's definition when { is in the same line
             else if (line.find("(") != std::string::npos && line.find("{") != std::string::npos && brackets_amount == 0)
             {
@@ -174,14 +200,9 @@ void check_connections(const std::list<std::string>& list_files,
             if (increment_bracket_count(line))
                 brackets_amount++;
 
-            //! \todo handle situation like
-            //! namespace {namespace_name}
-            //! {
-            //! ...
-            //! }
             else if (line.find("{") != std::string::npos && line.rfind("namespace", 0) != std::string::npos && !is_namespace)
             {
-                unsigned int i = 9;
+                unsigned int i = 10;
                 for (; i < line.size(); ++i)
                     if (line.at(i) != ' ')
                         break;
@@ -196,6 +217,8 @@ void check_connections(const std::list<std::string>& list_files,
                 namespace_connection._namespace_name = namespace_name;
                 namespaces.push_back(namespace_connection);
                 current_namespace = &namespaces[namespaces.size() - 1];
+
+                is_namespace = true;
             }
 
             if (line.find("}") != std::string::npos && brackets_amount > 0 && line.find('"}"') == std::string::npos)

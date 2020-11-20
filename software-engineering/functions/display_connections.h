@@ -16,6 +16,5 @@ void display_connections(ProjectConnections projectConnections)
                 if (connection2._function_name == it->first && connection._namespace != connection2._namespace
                     && connection._namespace != "empty" && connection2._namespace != "empty")
                     std::cout << connection._namespace << " is connected with " << connection2._namespace <<
-                    " because " << it->first << " calls " << connection2._function_name << std::endl;
-
+                    " because " << connection._namespace << " calls " << connection2._function_name << std::endl;
 }

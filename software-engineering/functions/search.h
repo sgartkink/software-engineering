@@ -4,6 +4,7 @@
 #include <map>
 #include <list>
 #include <string>
+#include <algorithm>
 
 #include "../structs/FileStruct.h"
 #include "file_size.h"
@@ -43,7 +44,7 @@ namespace search {
 
 	                // check if string is a name of a header or cpp file
 	                if (line.find(".h") != std::string::npos || line.find(".cpp") != std::string::npos)
-	                    map[*it].includes.push_back(file_name);
+                        map[*it].includes.push_back(file_name);
 	            }
 	        }
 	    }

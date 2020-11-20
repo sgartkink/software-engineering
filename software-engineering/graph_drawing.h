@@ -2,6 +2,7 @@
 #include <string>
 #include <sstream>
 #include "structs/ProjectConnections.h"
+#include "structs/FileStruct.h"
 
 void bash_files(std::string graph_name) {
     std::string png_name = graph_name + ".png";
@@ -17,8 +18,9 @@ void bash_files(std::string graph_name) {
 #elif unix || APPLE
     std::string sh_name = graph_name + ".sh";
     std::ofstream script(sh_name);
+    std::cout << sh_name;
     script << "#/bin/bash\n";
-    script << "dot -Tpng " << gv_name << " -o " png_name;
+    script << "dot -Tpng " << gv_name << " -o " << png_name;
     script.close();
     system((sh_name).c_str());
     system((png_name).c_str());
@@ -51,7 +53,7 @@ std::string getname(std::string s) {
     tab = NULL;
     return a;
 }
-void making_files_graph(std::string graph_name, std::list<std::string> files_list, search::our_map map) {
+void making_files_graph(std::string graph_name, std::list<std::string> files_list, std::map<std::string, FileStruct> map) {
     std::string x = graph_name + ".gv";
     std::ofstream file(x);
     std::stringstream name, name2;

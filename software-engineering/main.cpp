@@ -8,11 +8,10 @@
 int main()
 {
     const std::list<std::string> files_list = list_files::get_list_files(std::filesystem::current_path().string());
-    //const std::list<std::string> files_list = list_files::get_list_files("/home/szymon/git/software-engineering/software-engineering/");
 
     search::our_map map = search::create_map(files_list);
 
-    making_files_graph("files_graph",files_list, map);
+    making_files_graph("files_graph", files_list, map);
 
     ProjectConnections projectConnections(files_list);
 
@@ -20,7 +19,7 @@ int main()
 
     making_namespaces_graph("namespaces_graph", projectConnections);
 
-    //display_connections(projectConnections);
+    display_connections(projectConnections);
     
     return 0;
 }
