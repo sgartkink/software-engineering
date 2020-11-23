@@ -1,7 +1,7 @@
+#include "functions/create_functions_file.h"
 #include "functions/list_files.h"
 #include "functions/search.h"
 #include "functions/display_connections.h"
-#include "functions/display_includes.h"
 #include "structs/ProjectConnections.h"
 #include "graph_drawing.h"
 
@@ -20,6 +20,8 @@ int main()
     making_namespaces_graph("namespaces_graph", projectConnections);
 
     display_connections(projectConnections);
-    
+
+    create_functions_file(projectConnections.getFunctionConnections()); // functions to file
+	
     return 0;
 }

@@ -3,7 +3,7 @@
 #include "../structs/ProjectConnections.h"
 
 void display_connections(ProjectConnections projectConnections)
-{
+{	
     for (auto connection : projectConnections.getFunctionConnections())
         connection.show_connections();
 

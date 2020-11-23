@@ -40,12 +40,12 @@ void check_connections(const std::list<std::string>& list_files,
 {
     FunctionConnections* current_connection = nullptr;
     NamespaceConnections* current_namespace = nullptr;
-
+	
     for (auto it = list_files.begin(); it != list_files.end(); ++it)
     {
         std::ifstream file;
         file.open(*it);
-
+    	
         if (file.fail())
         {
             file.close();
@@ -103,7 +103,7 @@ void check_connections(const std::list<std::string>& list_files,
                         break;
 
                 std::string function_name = previous_line.substr(i + 1, previous_line.find("(") - i - 1);
-                FunctionConnections func(function_name);
+                FunctionConnections func(function_name, *it);
                 connections.push_back(func);
                 current_connection = &connections[connections.size() - 1];
 
@@ -158,7 +158,7 @@ void check_connections(const std::list<std::string>& list_files,
                                 break;
 
                         std::string function_name = previous_line.substr(i + 1, previous_line.length());
-                        FunctionConnections func(function_name);
+                        FunctionConnections func(function_name, *it);
                         connections.push_back(func);
                         current_connection = &connections[connections.size() - 1];
 
@@ -175,7 +175,7 @@ void check_connections(const std::list<std::string>& list_files,
                                 break;
 
                         std::string function_name = line.substr(i + 1, line.find("(") - i - 1);
-                        FunctionConnections func(function_name);
+                        FunctionConnections func(function_name, *it);
                         connections.push_back(func);
                         current_connection = &connections[connections.size() - 1];
 
