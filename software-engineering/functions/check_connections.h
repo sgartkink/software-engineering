@@ -24,6 +24,7 @@ struct NamespaceConnections {  //! \todo extract this struct into separate file
             std::cout << func << std::endl;
         std::cout << std::endl;
     }
+
     void includes_to_graph(std::string name) {
         std::fstream x;
         x.open(name, std::ios::out | std::ios::app);
@@ -34,9 +35,7 @@ struct NamespaceConnections {  //! \todo extract this struct into separate file
 };
 
 //! \todo handle situation when () are in other line than function name
-void check_connections(const std::list<std::string>& list_files,
-    std::vector<FunctionConnections>& connections,
-    std::vector<NamespaceConnections>& namespaces)
+void check_connections(const std::list<std::string>& list_files, std::vector<FunctionConnections>& connections, std::vector<NamespaceConnections>& namespaces)
 {
     FunctionConnections* current_connection = nullptr;
     NamespaceConnections* current_namespace = nullptr;

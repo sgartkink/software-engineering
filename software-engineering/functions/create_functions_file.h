@@ -1,6 +1,7 @@
 #pragma once
 
 #include <vector>
+#include <algorithm>
 #include "../structs/FunctionConnections.h"
 
 void create_functions_file(std::vector<FunctionConnections> connections)
