@@ -238,7 +238,6 @@ void check_connections(const std::list<std::string>& list_files, std::vector<Fun
                 for (; i > 0; --i)
                     if (should_increment(previous_line, i))
                         break;
-                //                std::cout << previous_line.substr(i + 1, previous_line.length()) << std::endl;
             }
 
             // szukamy użytych funkcji
@@ -297,7 +296,13 @@ void check_connections(const std::list<std::string>& list_files, std::vector<Fun
                             if (substring.substr(0, k + 1) != "else")
                             {
                                 std::string function_name = substring.substr(0, k + 1);
-                                current_connection->add_new_function(function_name);
+
+                                if (function_name.size() < 2)
+                                    current_connection->add_new_function(function_name);
+                                else
+                                    if (function_name.at(function_name.size() - 2) != 'i' &&
+                                            function_name.at(function_name.size() - 1) != 'f')
+                                    current_connection->add_new_function(function_name);
 
                                 substring = line;
                                 substring = substring.substr(substring.find("(") + 1, substring.length());
@@ -329,7 +334,12 @@ void check_connections(const std::list<std::string>& list_files, std::vector<Fun
                             && function_name.find_first_not_of(' ') != std::string::npos
                             && function_name.find("!") == std::string::npos)
                         {
-                            current_connection->add_new_function(function_name);
+                            if (function_name.size() < 2)
+                                current_connection->add_new_function(function_name);
+                            else
+                                if (function_name.at(function_name.size() - 2) != 'i' &&
+                                        function_name.at(function_name.size() - 1) != 'f')
+                                current_connection->add_new_function(function_name);
                         }
                     }
 
