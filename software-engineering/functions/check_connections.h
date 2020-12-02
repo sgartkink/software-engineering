@@ -1,5 +1,3 @@
-#pragma once
-
 #include <iostream>
 #include <fstream>
 #include <list>
@@ -13,6 +11,7 @@
 #include "check_connections_modules/should_increment.h"
 
 struct NamespaceConnections {  //! \todo extract this struct into separate file
+    std::string _file_name;
     std::string _namespace_name;
     std::vector<std::string> _functions_included;
     std::vector<std::string> _namespaces_included; //! \todo
@@ -24,6 +23,42 @@ struct NamespaceConnections {  //! \todo extract this struct into separate file
             std::cout << func << std::endl;
         std::cout << std::endl;
     }
+
+    void functions_namespaces_to_graph(std::string file_name) {
+        std::ofstream file;
+        static int cluster = 0;
+        file.open(file_name, std::ofstream::out | std::ofstream::app);
+        file << "\nsubgraph cluster" << cluster << "\n{\nnode[style = filled,color = white];\nstyle = filled;\ncolor = lightgrey;\n" << '"' << _namespace_name << '"' << " [shape = hexagon];\n";
+        for (const std::string& func : _functions_included) {
+            file << '"' << _namespace_name << '"' << "->" << '"' << func << '"' << "\n";
+            ++cluster;
+        }
+        file << "}\n";
+        file.close();
+    }
+
+    void functions_namespaces_to_graph2(std::string file_name) {
+        std::ofstream file;
+        file.open(file_name, std::ofstream::out | std::ofstream::app);
+        for (const std::string& func : _functions_included) {
+            file << '"' << _namespace_name << '"' << "->" << '"' << func << '"' << "\n";
+        }
+        file.close();
+    }
+
+    std::string get_file_name()
+    {
+        return _file_name;
+    }
+
+    std::string get_namespace_name()
+    {
+        return _namespace_name;
+    }
+
+    std::vector<std::string> get_included_functions()
+    {
+        return _functions_included;
 
     void includes_to_graph(std::string name) {
         std::fstream x;
@@ -39,12 +74,12 @@ void check_connections(const std::list<std::string>& list_files, std::vector<Fun
 {
     FunctionConnections* current_connection = nullptr;
     NamespaceConnections* current_namespace = nullptr;
-	
+
     for (auto it = list_files.begin(); it != list_files.end(); ++it)
     {
         std::ifstream file;
         file.open(*it);
-    	
+
         if (file.fail())
         {
             file.close();
@@ -90,7 +125,7 @@ void check_connections(const std::list<std::string>& list_files, std::vector<Fun
 
             // check if line starts with a comment
             //! \todo take into account a block of comments
-			if(check_if_line_starts_with_comment(line))
+            if (check_if_line_starts_with_comment(line))
                 continue;
 
             // function's definition when { is in other line
@@ -115,7 +150,7 @@ void check_connections(const std::list<std::string>& list_files, std::vector<Fun
 
             //namespace's name when { is in other line
             else if (previous_line.rfind("namespace", 0) != std::string::npos && line.find("{") != std::string::npos && !is_namespace && brackets_amount == 0
-                     && previous_line.find("{") == std::string::npos)
+                && previous_line.find("{") == std::string::npos)
             {
                 std::string namespace_name = previous_line.substr(10);
                 unsigned int i = 0;
@@ -134,6 +169,7 @@ void check_connections(const std::list<std::string>& list_files, std::vector<Fun
 
                 NamespaceConnections namespace_connection;
                 namespace_connection._namespace_name = namespace_name;
+                namespace_connection._file_name = *it;
                 namespaces.push_back(namespace_connection);
                 current_namespace = &namespaces[namespaces.size() - 1];
                 is_namespace = true;
@@ -214,6 +250,7 @@ void check_connections(const std::list<std::string>& list_files, std::vector<Fun
                 std::string namespace_name = line.substr(i, k - i);
                 NamespaceConnections namespace_connection;
                 namespace_connection._namespace_name = namespace_name;
+                namespace_connection._file_name = *it;
                 namespaces.push_back(namespace_connection);
                 current_namespace = &namespaces[namespaces.size() - 1];
 
@@ -350,4 +387,4 @@ void check_connections(const std::list<std::string>& list_files, std::vector<Fun
             }
         }
     }
-} 
+}

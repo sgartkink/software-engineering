@@ -1,7 +1,7 @@
 #pragma once
 #include <iostream>
 #include <list>
-#include "search.h"
+#include "./search.h"
 
 void display_includes(std::list<std::string> files_list, search::our_map map)
 {

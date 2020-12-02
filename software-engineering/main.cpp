@@ -3,25 +3,29 @@
 #include "functions/search.h"
 #include "functions/display_connections.h"
 #include "structs/ProjectConnections.h"
-#include "graph_drawing.h"
+#include "graphs/graph_drawing.h"
+
 
 int main()
 {
+
     const std::list<std::string> files_list = list_files::get_list_files(std::filesystem::current_path().string());
 
     search::our_map map = search::create_map(files_list);
 
-    making_files_graph("files_graph", files_list, map);
-
     ProjectConnections projectConnections(files_list);
 
-    making_functions_graph("functions_graph", projectConnections);
+    int number;
 
-    making_namespaces_graph("namespaces_graph", projectConnections);
+    do {
+        std::cout << "Choose what do you want to see:\n1) Files graph\n2) Functions graph\n3) Namespaces graph\n4) Files and functions relationship graph\n5) Graphs export to Visual Paradigm\n0) Exit\n";
 
-    display_connections(projectConnections);
+        std::cin >> number;
+        std::cout << std::endl;
 
-    create_functions_file(projectConnections.getFunctionConnections()); // functions to file
-	
+        if (number != 0)
+            general_graph(number, files_list, map, projectConnections);
+    } while (number != 0);
+
     return 0;
 }
