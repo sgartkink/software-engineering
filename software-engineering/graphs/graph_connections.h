@@ -49,11 +49,11 @@ void files_graph(std::string file_name, std::list<std::string> files_list, std::
     }
     file.close();
 }
-void functions_graph(std::string file_name, ProjectConnections projectConnections) {
+void functions_graph(std::string file_name, ProjectConnections projectConnections, std::vector<std::string> functions_list = {}) {
     std::ofstream file;
     file.open(file_name, std::ios::out | std::ios::app);
     for (auto connection : projectConnections.getFunctionConnections()) {
-        connection.connections_to_graph(file_name);
+        connection.connections_to_graph(file_name, functions_list);
     }
     file.close();
 }
@@ -64,8 +64,10 @@ void namespaces_graph(std::string file_name, ProjectConnections projectConnectio
         for (auto it = connection._number_of_function_calls.begin(); it != connection._number_of_function_calls.end(); ++it)
             for (auto connection2 : projectConnections.getFunctionConnections())
                 if (connection2._function_name == it->first && connection._namespace != connection2._namespace
-                    && connection._namespace != "empty" && connection2._namespace != "empty")
+                    && connection._namespace != "empty" && connection2._namespace != "empty") {
+                    file <<  "edge [color=blue];\n";
                     file << '"' << connection._namespace << '"' << "->" << '"' << connection2._namespace << '"'
-                    << "[label = 1];\n" << '"' << connection._namespace << '"' << " [shape = hexagon];\n" << '"' << connection2._namespace << '"' << " [shape = hexagon];\n";
+                        << "[label = 1];\n" << '"' << connection._namespace << '"' << " [shape = hexagon];\n" << '"' << connection2._namespace << '"' << " [shape = hexagon];\n";
+                }
     file.close();
 }

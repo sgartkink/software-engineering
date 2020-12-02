@@ -25,7 +25,10 @@ void general_graph(int number, std::list<std::string> files_list, std::map<std::
     else if (number == 2) {
         file << "digraph files_graph\n{\nsubgraph cluster0\n{\nnode[style = filled,color = white];\nstyle = filled;\n\color = lightgrey;\n";
         file.close();
+        //std::vector<std::string> functions_list = our_funtions_list(projectConnections.getFunctionConnections());
+        funtions_files_to_graph(projectConnections.getFunctionConnections(), x);
         functions_graph(x, projectConnections);
+        //functions_graph(x, projectConnections, functions_list);
         file.open(x, std::ios::out | std::ios::app);
         file << "label = " << '"' << "Functions graph" << '"' << ";\n}\n}";
         file.close();
@@ -42,7 +45,9 @@ void general_graph(int number, std::list<std::string> files_list, std::map<std::
     else if (number == 12 || number == 21) {
         file << "digraph " << graph_name << "\n{\n";
         file.close();
-        funtions_files_to_graph(projectConnections.getFunctionConnections(),x);
+        //std::vector<std::string> functions_list = funtions_files_to_graph(projectConnections.getFunctionConnections(), x);
+        //functions_graph(x, projectConnections, functions_list);
+        funtions_files_to_graph(projectConnections.getFunctionConnections(), x);
         functions_graph(x, projectConnections);
         file.open(x, std::ios::out | std::ios::app);
         file << "}";
@@ -72,11 +77,12 @@ void general_graph(int number, std::list<std::string> files_list, std::map<std::
     else if (number == 123 || number == 132 || number == 213 || number == 231 || number == 312 || number == 321) {
         file << "digraph " << graph_name << "\n{\n";
         file.close();
-        namespaces_files_to_graph(projectConnections.getNamespaceConnections(), x);
+        funtions_files_to_graph(projectConnections.getFunctionConnections(), x);
+        namespaces_files_to_graph2(projectConnections.getNamespaceConnections(), x);
         for (auto name : projectConnections.getNamespaceConnections()) {
             name.functions_namespaces_to_graph(x);
         }
-        //functions_graph(x, projectConnections);
+        functions_graph(x, projectConnections);
         file.open(x, std::ios::out | std::ios::app);
         file << "}";
         file.close();
