@@ -1,4 +1,5 @@
 #include <vector>
+#include <algorithm>
 #include "../structs/FunctionConnections.h"
 #include "../structs/ProjectConnections.h"
 

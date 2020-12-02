@@ -59,13 +59,18 @@ struct NamespaceConnections {  //! \todo extract this struct into separate file
     std::vector<std::string> get_included_functions()
     {
         return _functions_included;
+
+    void includes_to_graph(std::string name) {
+        std::fstream x;
+        x.open(name, std::ios::out | std::ios::app);
+        for (const std::string& func : _functions_included)
+            x << '"' << func << '"' << "->" << '"' << _namespace_name << '"' << "\n";
+        x.close();
     }
 };
 
 //! \todo handle situation when () are in other line than function name
-void check_connections(const std::list<std::string>& list_files,
-    std::vector<FunctionConnections>& connections,
-    std::vector<NamespaceConnections>& namespaces)
+void check_connections(const std::list<std::string>& list_files, std::vector<FunctionConnections>& connections, std::vector<NamespaceConnections>& namespaces)
 {
     FunctionConnections* current_connection = nullptr;
     NamespaceConnections* current_namespace = nullptr;
@@ -270,7 +275,6 @@ void check_connections(const std::list<std::string>& list_files,
                 for (; i > 0; --i)
                     if (should_increment(previous_line, i))
                         break;
-                //                std::cout << previous_line.substr(i + 1, previous_line.length()) << std::endl;
             }
 
             // szukamy użytych funkcji
@@ -329,7 +333,13 @@ void check_connections(const std::list<std::string>& list_files,
                             if (substring.substr(0, k + 1) != "else")
                             {
                                 std::string function_name = substring.substr(0, k + 1);
-                                current_connection->add_new_function(function_name);
+
+                                if (function_name.size() < 2)
+                                    current_connection->add_new_function(function_name);
+                                else
+                                    if (function_name.at(function_name.size() - 2) != 'i' &&
+                                            function_name.at(function_name.size() - 1) != 'f')
+                                    current_connection->add_new_function(function_name);
 
                                 substring = line;
                                 substring = substring.substr(substring.find("(") + 1, substring.length());
@@ -361,7 +371,12 @@ void check_connections(const std::list<std::string>& list_files,
                             && function_name.find_first_not_of(' ') != std::string::npos
                             && function_name.find("!") == std::string::npos)
                         {
-                            current_connection->add_new_function(function_name);
+                            if (function_name.size() < 2)
+                                current_connection->add_new_function(function_name);
+                            else
+                                if (function_name.at(function_name.size() - 2) != 'i' &&
+                                        function_name.at(function_name.size() - 1) != 'f')
+                                current_connection->add_new_function(function_name);
                         }
                     }
 
