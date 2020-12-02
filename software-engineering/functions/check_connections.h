@@ -37,6 +37,15 @@ struct NamespaceConnections {  //! \todo extract this struct into separate file
         file.close();
     }
 
+    void functions_namespaces_to_graph2(std::string file_name) {
+        std::ofstream file;
+        file.open(file_name, std::ofstream::out | std::ofstream::app);
+        for (const std::string& func : _functions_included) {
+            file << '"' << _namespace_name << '"' << "->" << '"' << func << '"' << "\n";
+        }
+        file.close();
+    }
+
     std::string get_file_name()
     {
         return _file_name;
@@ -54,7 +63,9 @@ struct NamespaceConnections {  //! \todo extract this struct into separate file
 };
 
 //! \todo handle situation when () are in other line than function name
-void check_connections(const std::list<std::string>& list_files, std::vector<FunctionConnections>& connections, std::vector<NamespaceConnections>& namespaces)
+void check_connections(const std::list<std::string>& list_files,
+    std::vector<FunctionConnections>& connections,
+    std::vector<NamespaceConnections>& namespaces)
 {
     FunctionConnections* current_connection = nullptr;
     NamespaceConnections* current_namespace = nullptr;
@@ -153,6 +164,7 @@ void check_connections(const std::list<std::string>& list_files, std::vector<Fun
 
                 NamespaceConnections namespace_connection;
                 namespace_connection._namespace_name = namespace_name;
+                namespace_connection._file_name = *it;
                 namespaces.push_back(namespace_connection);
                 current_namespace = &namespaces[namespaces.size() - 1];
                 is_namespace = true;
@@ -233,6 +245,7 @@ void check_connections(const std::list<std::string>& list_files, std::vector<Fun
                 std::string namespace_name = line.substr(i, k - i);
                 NamespaceConnections namespace_connection;
                 namespace_connection._namespace_name = namespace_name;
+                namespace_connection._file_name = *it;
                 namespaces.push_back(namespace_connection);
                 current_namespace = &namespaces[namespaces.size() - 1];
 
@@ -257,6 +270,7 @@ void check_connections(const std::list<std::string>& list_files, std::vector<Fun
                 for (; i > 0; --i)
                     if (should_increment(previous_line, i))
                         break;
+                //                std::cout << previous_line.substr(i + 1, previous_line.length()) << std::endl;
             }
 
             // szukamy użytych funkcji
@@ -315,13 +329,7 @@ void check_connections(const std::list<std::string>& list_files, std::vector<Fun
                             if (substring.substr(0, k + 1) != "else")
                             {
                                 std::string function_name = substring.substr(0, k + 1);
-
-                                if (function_name.size() < 2)
-                                    current_connection->add_new_function(function_name);
-                                else
-                                    if (function_name.at(function_name.size() - 2) != 'i' &&
-                                        function_name.at(function_name.size() - 1) != 'f')
-                                        current_connection->add_new_function(function_name);
+                                current_connection->add_new_function(function_name);
 
                                 substring = line;
                                 substring = substring.substr(substring.find("(") + 1, substring.length());
@@ -353,12 +361,7 @@ void check_connections(const std::list<std::string>& list_files, std::vector<Fun
                             && function_name.find_first_not_of(' ') != std::string::npos
                             && function_name.find("!") == std::string::npos)
                         {
-                            if (function_name.size() < 2)
-                                current_connection->add_new_function(function_name);
-                            else
-                                if (function_name.at(function_name.size() - 2) != 'i' &&
-                                    function_name.at(function_name.size() - 1) != 'f')
-                                    current_connection->add_new_function(function_name);
+                            current_connection->add_new_function(function_name);
                         }
                     }
 
