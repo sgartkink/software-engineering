@@ -5,12 +5,12 @@
 #include "structs/ProjectConnections.h"
 #include "graphs/graph_drawing.h"
 
+#define BOOST_TEST_MODULE test
+#include <boost/test/included/unit_test.hpp>
 
-int main()
+BOOST_AUTO_TEST_CASE( test )
 {
-
     const std::list<std::string> files_list = list_files::get_list_files(std::filesystem::current_path().string());
-
     search::our_map map = search::create_map(files_list);
 
     ProjectConnections projectConnections(files_list);
@@ -26,6 +26,4 @@ int main()
         if (number != 0)
             general_graph(number, files_list, map, projectConnections);
     } while (number != 0);
-
-    return 0;
 }
