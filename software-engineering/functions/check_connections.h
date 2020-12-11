@@ -59,6 +59,7 @@ struct NamespaceConnections {  //! \todo extract this struct into separate file
     std::vector<std::string> get_included_functions()
     {
         return _functions_included;
+    }
 
     void includes_to_graph(std::string name) {
         std::fstream x;
@@ -95,6 +96,7 @@ void check_connections(const std::list<std::string>& list_files, std::vector<Fun
         int brackets_amount = 0;
 
         bool is_namespace = false;
+        bool in_multine_comment = false;
 
         while (!file.eof())
         {
@@ -124,8 +126,7 @@ void check_connections(const std::list<std::string>& list_files, std::vector<Fun
                 }
 
             // check if line starts with a comment
-            //! \todo take into account a block of comments
-            if (check_if_line_starts_with_comment(line))
+            if (check_if_line_starts_with_comment(line, in_multine_comment))
                 continue;
 
             // function's definition when { is in other line

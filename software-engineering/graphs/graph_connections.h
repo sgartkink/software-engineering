@@ -53,7 +53,7 @@ void functions_graph(std::string file_name, ProjectConnections projectConnection
     std::ofstream file;
     file.open(file_name, std::ios::out | std::ios::app);
     for (auto connection : projectConnections.getFunctionConnections()) {
-        connection.connections_to_graph(file_name, functions_list);
+        connection.connections_to_graph(file_name);
     }
     file.close();
 }
