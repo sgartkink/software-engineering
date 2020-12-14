@@ -1,11 +1,10 @@
-﻿#include "functions/create_functions_file.h"
-#include "functions/list_files.h"
+﻿#include "functions/list_files.h"
 #include "functions/search.h"
 #include "functions/display_connections.h"
 #include "structs/ProjectConnections.h"
 #include "graphs/graph_drawing.h"
 
-#define BOOST_TEST_MODULE main_test
+#define BOOST_TEST_MODULE main_tests
 #include <boost/test/included/unit_test.hpp>
 
 BOOST_AUTO_TEST_CASE( main_tests )
