@@ -2,13 +2,16 @@
 #include <fstream>
 #include <list>
 #include <vector>
-
+#include <filesystem>
 
 #include "../structs/FunctionConnections.h"
 #include "check_connections_modules/check_if_line_is_empty.h"
 #include "check_connections_modules/check_if_line_starts_with_comment.h"
 #include "check_connections_modules/increment_bracket_count.h"
 #include "check_connections_modules/should_increment.h"
+
+#define BOOST_TEST_MODULE check_tests
+#include <boost/test/included/unit_test.hpp>
 
 struct NamespaceConnections {  //! \todo extract this struct into separate file
     std::string _file_name;
@@ -387,5 +390,63 @@ void check_connections(const std::list<std::string>& list_files, std::vector<Fun
                 }
             }
         }
+    }
+}
+
+BOOST_AUTO_TEST_CASE( check_tests )
+{
+    std::list<std::string> files_list = { std::filesystem::current_path().string() + "/test_file.cpp"};
+    std::vector<FunctionConnections> connections;
+    std::vector<NamespaceConnections> namespaces;
+
+    check_connections(files_list, connections, namespaces);
+
+    for (int i = 0; i < connections.size(); ++i)
+    {
+        if (i == 0)
+        {
+            BOOST_CHECK (connections[i]._function_name == "sum");
+            BOOST_CHECK (connections[i]._namespace == "test_namespace");
+
+            std::map<std::string, int> map;
+            BOOST_CHECK (connections[i]._number_of_function_calls == map);
+        }
+        else if (i == 1)
+        {
+            BOOST_CHECK (connections[i]._function_name == "test");
+            BOOST_CHECK (connections[i]._namespace == "test_namespace");
+
+            std::map<std::string, int> map;
+            BOOST_CHECK (connections[i]._number_of_function_calls == map);
+        }
+        else if (i == 2)
+        {
+            BOOST_CHECK (connections[i]._function_name == "test_function");
+            BOOST_CHECK (connections[i]._namespace == "test_namespace");
+
+            std::map<std::string, int> map;
+            map["std::string"] = 1;
+            map["sum"] = 1;
+            map["test"] = 1;
+            BOOST_CHECK (connections[i]._number_of_function_calls == map);
+        }
+        else
+            BOOST_CHECK (false);
+    }
+
+    for (int i = 0; i < namespaces.size(); ++i)
+    {
+        if (i == 0)
+        {
+            BOOST_CHECK (namespaces[i]._namespace_name == "test_namespace");
+
+            std::vector<std::string> v;
+            v.push_back("sum");
+            v.push_back("test");
+            v.push_back("test_function");
+            BOOST_CHECK (namespaces[i]._functions_included == v);
+        }
+        else
+            BOOST_CHECK (false);
     }
 }

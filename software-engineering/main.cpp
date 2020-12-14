@@ -1,14 +1,14 @@
-#include "functions/create_functions_file.h"
+﻿#include "functions/create_functions_file.h"
 #include "functions/list_files.h"
 #include "functions/search.h"
 #include "functions/display_connections.h"
 #include "structs/ProjectConnections.h"
 #include "graphs/graph_drawing.h"
 
-#define BOOST_TEST_MODULE test
+#define BOOST_TEST_MODULE main_test
 #include <boost/test/included/unit_test.hpp>
 
-BOOST_AUTO_TEST_CASE( test )
+BOOST_AUTO_TEST_CASE( main_tests )
 {
     const std::list<std::string> files_list = list_files::get_list_files(std::filesystem::current_path().string());
     search::our_map map = search::create_map(files_list);

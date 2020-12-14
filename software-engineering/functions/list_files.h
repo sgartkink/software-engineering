@@ -1,7 +1,7 @@
 #include <list>
 #include <filesystem>
 
-#define BOOST_TEST_MODULE example
+#define BOOST_TEST_MODULE list_files_tests
 #include <boost/test/included/unit_test.hpp>
 
 namespace ends {
@@ -30,7 +30,7 @@ std::list<std::string> get_list_files(const std::string &path)
     return list;
 }
 
-BOOST_AUTO_TEST_CASE( example )
+BOOST_AUTO_TEST_CASE( list_files_tests )
 {
     std::string str = "test.cpp", str2 = "test.h", str3 = "test.abcd", str4 = "test.test", str5 = "t";
     std::string suf = ".cpp", suf2 = ".h", suf3 = ".abcd", suf4 = "tset", suf5 = "test";
