@@ -3,6 +3,7 @@
 #include "functions/display_connections.h"
 #include "structs/ProjectConnections.h"
 #include "graphs/graph_drawing.h"
+#include "paradigm_graph.h"
 
 #define BOOST_TEST_MODULE main_tests
 #include <boost/test/included/unit_test.hpp>
@@ -13,6 +14,7 @@ BOOST_AUTO_TEST_CASE( main_tests )
     search::our_map map = search::create_map(files_list);
 
     ProjectConnections projectConnections(files_list);
+    files_graph("diagram.xml", files_list, map);
 
     int number;
 
