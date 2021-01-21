@@ -4,6 +4,7 @@
 #include "structs/ProjectConnections.h"
 #include "graphs/graph_drawing.h"
 #include "paradigm_graph.h"
+#include "functions/cnn.h"
 
 #define BOOST_TEST_MODULE main_tests
 #include <boost/test/included/unit_test.hpp>
@@ -15,6 +16,7 @@ BOOST_AUTO_TEST_CASE( main_tests )
 
     ProjectConnections projectConnections(files_list);
     files_graph("diagram.xml", files_list, map);
+    check_cnn("cnn_graph",files_list, map);
 
     int number;
 
