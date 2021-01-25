@@ -36,7 +36,7 @@ Szymon:
 Paweł:
 - Lista klas
 Kewin:
-- Wyświetlanie grafu
+- Łączenie historyjek i wyświetlanie grafu
 Damian:
 - Activity diagram
 - Wyświetlanie grafu
@@ -48,7 +48,86 @@ Szymon:
 Paweł:
 - Optymalizacja i uporządkowanie kodu
 Kewin:
-- Dopracowanie funkcji związanych z grafami
+- Stworzenie funkcji eksportującej graf plików do Visual Paradigm poprzez XML
+- Modyfikowanie XML wejściowego i tworzenie szablonów niezbędnych do eksportu grafu
 Damian:
-- Class diagram
-- Dopracowanie wyświetlania grafów
+- Wyszukanie możliwych sposobów importu do Visual Paradigm
+- Class diagram 
+
+
+Historyjka 5
+Szymon:
+- Napisanie przeszukiwania plików w celu znalezienia namespaców
+Paweł:
+- Tworzenie funkcji zbierających nazwy funkcji i przestrzeni
+Kewin:
+- Łączenie i wyświetlanie historyjek
+Damian:
+- Połączenie poprzednich historyjek
+- Wyświetlanie wszystkich grafów
+- Połączenie warstw w grafach
+
+Historyjka 6
+Szymon:
+- Lista funkcji i namespaców w plikach, usprawnienia
+Paweł:
+- Pomoc z pisaniem funkcji
+Kewin:
+- Łączenie historyjek
+Damian:
+- Połączenie poprzednich historyjek
+- Tworzenie grafu relacji
+
+Historyjka 7
+Szymon:
+- Dodanie biblioteki boost i dopisanie testów kilku funkcji
+Paweł:
+- Napisanie części testów
+Kewin:
+- Łączenie historyjek
+Damian:
+- Optymalizacja i uporządkowanie kodu
+
+Historyjka 8
+Szymon:
+- brak
+Paweł:
+- brak
+Kewin:
+- brak
+Damian:
+- brak 
+
+
+Historyjka 9
+Szymon:
+- brak
+Paweł:
+- brak
+Kewin:
+- Stworzenie algorytmu korzystającego z biblioteki Lizard obliczającego i wyświetlającego na grafie złożoność cyklomatyczną dla wszystkich plików
+Damian:
+- brak
+
+
+Historyjka 10
+Szymon:
+- napisanie statycznych funkcji odpowiedzialnych za wyciąganie z gita nazwy pierwszego i ostatniego commitu dla danego pliku
+Paweł:
+- Wsparcie przy pisaniu funkcji wyciągających dane z gita
+Kewin:
+- Łączenie historyjek
+Damian:
+- Połączenie poprzednich historyjek
+- Wyświetlanie ID commita na grafie
+
+Historyjka 11
+Szymon:
+- napisanie statycznej funkcji odpowiedzialnej za wypisanie listy plików, które zostały zmienione w ostatnim commicie 
+Paweł:
+- Uzupełnienie listy tasków
+Kewin:
+- Łączenie historyjek
+Damian:
+- Wyświetlenie informacji potrzebnych do zrealizowania historyjki na grafie
+
