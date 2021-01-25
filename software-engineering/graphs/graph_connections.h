@@ -2,7 +2,9 @@
 #include <sstream>
 #include <fstream>
 
+#include "../functions/git_utils.h"
 #include "../structs/FileStruct.h"
+
 
 std::string getname(std::string s) {
     unsigned long n = s.length();
@@ -47,13 +49,21 @@ void files_graph(std::string file_name, std::list<std::string> files_list, std::
             file << '"' << getname(s) << '"' << "->" << '"' << getname(s2) << '"' << " [label = 1];\n" << '"' << getname(s) << '"' << " [shape = box];\n" << '"' << getname(s2) << '"' << " [shape = box];\n";
         }
     }
+    std::forward_list <std::string> lista = changed_files_list("C://Studia/AGH/Semestr 3/Inzynieria oprogramowania/IOGIT/software-engineering/software-engineering");
+    for (auto it = lista.begin(); it != lista.end(); ++it) {
+        std::stringstream name3;
+        std::string s3;
+        name3 << *it;
+        s3 = name3.str();
+        file << '"' << getname(s3) << '"' << " [style=filled, color=green]; \n";
+    }
     file.close();
 }
 void functions_graph(std::string file_name, ProjectConnections projectConnections, std::vector<std::string> functions_list = {}) {
     std::ofstream file;
     file.open(file_name, std::ios::out | std::ios::app);
     for (auto connection : projectConnections.getFunctionConnections()) {
-        connection.connections_to_graph(file_name);
+        connection.connections_to_graph(file_name, functions_list);
     }
     file.close();
 }
