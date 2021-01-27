@@ -18,7 +18,7 @@ void general_graph(int number, std::list<std::string> files_list, std::map<std::
         files_graph(x, files_list, map);
         file.open(x, std::ios::out | std::ios::app);
         file << "label = " << '"' << "Files graph" << '"' << ";\n}";
-        file << "label = " << '"' << "Git commit ID: " << get_last_commit_id("", "C://software-engineering/software-engineering") <<'"' << ";\n}";
+        file << "label = " << '"' << "Git commit ID: " << get_last_commit_id("", "") <<'"' << ";\n}";
         file.close();
     }
     else if (number == 2) {
@@ -27,7 +27,7 @@ void general_graph(int number, std::list<std::string> files_list, std::map<std::
         functions_graph(x, projectConnections);
         file.open(x, std::ios::out | std::ios::app);
         file << "label = " << '"' << "Functions graph" << '"' << ";\n}";
-        file << "label = " << '"' << "Git commit ID: " << get_last_commit_id("", "C://software-engineering/software-engineering") << '"' << ";\n}";
+        file << "label = " << '"' << "Git commit ID: " << get_last_commit_id("", "") << '"' << ";\n}";
         file.close();
     }
     else if (number == 3) {
@@ -36,7 +36,7 @@ void general_graph(int number, std::list<std::string> files_list, std::map<std::
         namespaces_graph(x, projectConnections);
         file.open(x, std::ios::out | std::ios::app);
         file << "label = " << '"' << "Namespaces graph" << '"' << ";\n}";
-        file << "label = " << '"' << "Git commit ID: " << get_last_commit_id("", "C://software-engineering/software-engineering") << '"' << ";\n}";
+        file << "label = " << '"' << "Git commit ID: " << get_last_commit_id("", "") << '"' << ";\n}";
         file.close();
         created = 1;
     }
@@ -46,7 +46,7 @@ void general_graph(int number, std::list<std::string> files_list, std::map<std::
         funtions_files_to_graph(projectConnections.getFunctionConnections(), x);
         functions_graph(x, projectConnections);
         file.open(x, std::ios::out | std::ios::app);
-        file << "label = " << '"' << "Git commit ID: " << get_last_commit_id("", "C://software-engineering/software-engineering") << '"' << ";\n}";
+        file << "label = " << '"' << "Git commit ID: " << get_last_commit_id("", "") << '"' << ";\n}";
         file.close();
     }
     else if (number == 13 || number == 31) {
@@ -56,7 +56,7 @@ void general_graph(int number, std::list<std::string> files_list, std::map<std::
         files_graph(x, files_list, map);
         namespaces_graph(x, projectConnections);
         file.open(x, std::ios::out | std::ios::app);
-        file << "label = " << '"' << "Git commit ID: " << get_last_commit_id("", "C://software-engineering/software-engineering") << '"' << ";\n}";
+        file << "label = " << '"' << "Git commit ID: " << get_last_commit_id("", "") << '"' << ";\n}";
         file.close();
     }
     else if (number == 23 || number == 32) {
@@ -67,7 +67,7 @@ void general_graph(int number, std::list<std::string> files_list, std::map<std::
         }
         functions_graph(x, projectConnections);
         file.open(x, std::ios::out | std::ios::app);
-        file << "label = " << '"' << "Git commit ID: " << get_last_commit_id("", "C://software-engineering/software-engineering") << '"' << ";\n}";
+        file << "label = " << '"' << "Git commit ID: " << get_last_commit_id("", "") << '"' << ";\n}";
         file.close();
     }
     else if (number == 123 || number == 132 || number == 213 || number == 231 || number == 312 || number == 321) {
@@ -80,7 +80,7 @@ void general_graph(int number, std::list<std::string> files_list, std::map<std::
         }
         functions_graph(x, projectConnections);
         file.open(x, std::ios::out | std::ios::app);
-        file << "label = " << '"' << "Git commit ID: " << get_last_commit_id("", "C://software-engineering/software-engineering") << '"' << ";\n}";
+        file << "label = " << '"' << "Git commit ID: " << get_last_commit_id("", "") << '"' << ";\n}";
         file.close();
     }
     else if (number == 4) {
@@ -88,7 +88,7 @@ void general_graph(int number, std::list<std::string> files_list, std::map<std::
         file.close();
         funtions_files_to_graph(projectConnections.getFunctionConnections(), x, "reversed");
         file.open(x, std::ios::out | std::ios::app);
-        file << "label = " << '"' << "Git commit ID: " << get_last_commit_id("", "C://software-engineering/software-engineering") << '"' << ";\n}";
+        file << "label = " << '"' << "Git commit ID: " << get_last_commit_id("", "") << '"' << ";\n}";
         file.close();
     }
     else {
