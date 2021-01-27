@@ -30,7 +30,7 @@ struct FunctionConnections
         std::cout << std::endl;
     }
 	
-    void connections_to_graph(std::string name)
+    void connections_to_graph(std::string name, std::vector<std::string> functions_list)
     {
         std::fstream x;
         x.open(name, std::ios::out | std::ios::app);
