@@ -22,7 +22,7 @@ public:
 std::map<std::string, int> filesID;
 std::map<int, std::vector<int>> IDmap;
 std::vector<paradigmID> Vec;
-void files_graph(std::string file_name, std::list<std::string> files_list, search::our_map map) {
+void paradigm_graph(std::string file_name, std::list<std::string> files_list, search::our_map map) {
     
     std::stringstream name, name2;
     std::string s, s2, name3, name4, id;
