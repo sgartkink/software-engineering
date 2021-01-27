@@ -24,7 +24,6 @@ void general_graph(int number, std::list<std::string> files_list, std::map<std::
     else if (number == 2) {
         file << "digraph files_graph\n{\nsubgraph cluster0\n{\nnode[style = filled,color = white];\nstyle = filled;\n\color = lightgrey;\n";
         file.close();
-        funtions_files_to_graph(projectConnections.getFunctionConnections(), x);
         functions_graph(x, projectConnections);
         file.open(x, std::ios::out | std::ios::app);
         file << "label = " << '"' << "Functions graph" << '"' << ";\n}";
