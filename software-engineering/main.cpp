@@ -15,7 +15,7 @@ BOOST_AUTO_TEST_CASE( main_tests )
     search::our_map map = search::create_map(files_list);
 
     ProjectConnections projectConnections(files_list);
-    files_graph("diagram.xml", files_list, map);
+    paradigm_graph("diagram.xml", files_list, map);
     check_cnn("cnn_graph",files_list, map);
 
     int number;
