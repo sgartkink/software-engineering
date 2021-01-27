@@ -11,7 +11,7 @@ void cs()
     std::string sname = "lizcnn.sh";
     std::ofstream script(sname);
     script << "#/bin/bash\n";
-    script << "/usr/local/Cellar/lizard-analyzer/1.17.7/libexec/bin/lizard /Users/kewintarnowski/IO6 > /Users/kewintarnowski/IO6/lc.txt";
+    script << "lizard ../ > ../lc.txt";
     script.close();
     sname = "./" + sname;
     system("chmod +x lizcnn.sh");
